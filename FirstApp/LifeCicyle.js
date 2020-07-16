@@ -13,26 +13,26 @@ export default class LifeCicyle extends Component {
         }
     }
     // 组件装载之前调用 unsafe
-    componentWillMount() {
-        console.log('------componentWillMount-----');
-    }
+    // componentWillMount() {
+    //     console.log('------componentWillMount-----');
+    // }
     // 组件装载之后调用
     componentDidMount() {
         console.log('------componentDidMount-----');
     }
     // 在组件接收到新的props时调用 unsafe
-    componentWillReceiveProps(nextProps) {
-        console.log('------componentWillReceiveProps-----');
-    }
+    // componentWillReceiveProps(nextProps) {
+    //     console.log('------componentWillReceiveProps-----');
+    // }
     // 组件要不要更新时调用
     shouldComponentUpdate(nextProps, nextState) {
         console.log('------shouldComponentUpdate-----');
         return true;
     }
     // 组件在更新之前调用 unsafe
-    componentWillUpdate(nextProps, nextState) {
-        console.log('------componentWillUpdate-----');
-    }
+    // componentWillUpdate(nextProps, nextState) {
+    //     console.log('------componentWillUpdate-----');
+    // }
     // 组件被更新之后调用的方法
     componentDidUpdate(nextProps, nextState) {
         console.log('------componentDidUpdate-----');

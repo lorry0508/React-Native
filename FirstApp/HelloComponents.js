@@ -10,7 +10,7 @@ import {
 */
 export default class HelloComponent extends Component {
     render() {
-    return <Text style={{fontSize: 20, backgroundColor: 'red'}}>Hello{this.props.name}</Text>;
+        return <Text style={{fontSize: 20, backgroundColor: 'red'}}>Hello{this.props.name}</Text>;
     }
 };
 
