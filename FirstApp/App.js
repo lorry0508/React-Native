@@ -46,6 +46,12 @@ export default class App extends React.Component {
 	render() {
 		var view = this.state.remove ? null : <LifeCicyle name="小罗" />;
 		var text = this.state.remove ? '让他复活' : '干掉他';
+		var params = {
+			name: '小张',
+			age: 12,
+			sex: '男'
+		}
+		var { name, sex } = params;
 		return (
 			<View>
 				{/* <HelloComponents name="小明" /> */}
@@ -73,7 +79,11 @@ export default class App extends React.Component {
 					}}>
 						2 + 3 = { this.state.result }
 				</Text>
-				<PropsTest name="props学习" />
+				{/* <PropsTest name="小红" sex='女' /> */}
+				{/* es6延展操作符 */}
+				{/* <PropsTest {...params} />  */}
+				{/* es6解构赋值 */}
+				<PropsTest name={name} sex={sex} /> 
 			</View>
 		);
 	}
