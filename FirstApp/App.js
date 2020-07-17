@@ -19,6 +19,7 @@ import StateTest from './StateTest';
 import RefTest from './RefTest';
 import Student from './Student';
 import MingStudent from './MingStudent';
+import FlexBoxTest from './FlexBoxTest';
 
 import {
 	// 
@@ -108,12 +109,13 @@ export default class App extends React.Component {
 				<RefTest ref='reftest' /> */}
 				{/* <RefTest ref={reftest => this.reftests = reftest} />'' */}
 
-				<Text>
-					{this.stu.getDescription()} {/* 创建实例继承 */}
-				</Text>
-				<Text>
+				{/* <Text>
+					{this.stu.getDescription()} 
+				</Text> */}
+				{/* <Text>
 					{this.ming.getDescription()}
-				</Text>
+				</Text> */}
+				<FlexBoxTest />
 			</View>
 		);
 	}
