@@ -115,7 +115,7 @@ export default class App extends React.Component {
 				{/* <Text>
 					{this.ming.getDescription()}
 				</Text> */}
-				<FlexBoxTest />
+				{/* <FlexBoxTest /> */}
 			</View>
 		);
 	}
