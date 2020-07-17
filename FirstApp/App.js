@@ -16,6 +16,7 @@ import LifeCicyle from './LifeCicyle';
 import EIComponent, { name, age, add } from './EIComponent';
 import PropsTest from './PropsTest';
 import StateTest from './StateTest';
+import RefTest from './RefTest';
 
 import {
 	// 
@@ -41,7 +42,8 @@ export default class App extends React.Component {
 		super(props);
 		this.state = {
 			remove: false,
-			result: 0
+			result: 0,
+			size: 0
 		}
 	}
 	render() {
@@ -86,6 +88,21 @@ export default class App extends React.Component {
 				{/* es6解构赋值 */}
 				<PropsTest name={name} sex={sex} />
 				<StateTest />
+				<Text
+					ref='test'
+					style={{fontSize: 20}}
+					onPress={()=> {
+						// var size = this.refs.reftest.getSize();
+						// var size = this.reftests.getSize();
+						var size = this.refs['reftest'].getSize();
+						this.setState({
+							size: size
+						})
+					}}>
+					获取字体大小: {this.state.size}
+				</Text>
+				<RefTest ref='reftest' />
+				{/* <RefTest ref={reftest => this.reftests = reftest} />'' */}
 			</View>
 		);
 	}
