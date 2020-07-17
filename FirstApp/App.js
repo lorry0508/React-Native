@@ -15,6 +15,7 @@ import HelloComponents from './HelloComponents';
 import LifeCicyle from './LifeCicyle';
 import EIComponent, { name, age, add } from './EIComponent';
 import PropsTest from './PropsTest';
+import StateTest from './StateTest';
 
 import {
 	// 
@@ -83,7 +84,8 @@ export default class App extends React.Component {
 				{/* es6延展操作符 */}
 				{/* <PropsTest {...params} />  */}
 				{/* es6解构赋值 */}
-				<PropsTest name={name} sex={sex} /> 
+				<PropsTest name={name} sex={sex} />
+				<StateTest />
 			</View>
 		);
 	}
