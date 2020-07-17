@@ -17,6 +17,8 @@ import EIComponent, { name, age, add } from './EIComponent';
 import PropsTest from './PropsTest';
 import StateTest from './StateTest';
 import RefTest from './RefTest';
+import Student from './Student';
+import MingStudent from './MingStudent';
 
 import {
 	// 
@@ -45,6 +47,8 @@ export default class App extends React.Component {
 			result: 0,
 			size: 0
 		}
+		this.stu = new Student('小王', 18, '男');
+		this.ming = new MingStudent();
 	}
 	render() {
 		var view = this.state.remove ? null : <LifeCicyle name="小罗" />;
@@ -58,7 +62,7 @@ export default class App extends React.Component {
 		return (
 			<View>
 				{/* <HelloComponents name="小明" /> */}
-				<Text
+				{/* <Text
 					style={{fontSize: 20}}
 					onPress={
 						()=> {
@@ -69,8 +73,8 @@ export default class App extends React.Component {
 					}>
 						{text}
 				</Text>
-				{view}
-				<EIComponent name="react-native" />
+				{view} */}
+				{/* <EIComponent name="react-native" />
 				<Text style={{fontSize: 20}}>姓名：{name}</Text>
 				<Text style={{fontSize: 20}}>年龄：{age}</Text>
 				<Text style={{fontSize: 20}}
@@ -81,12 +85,12 @@ export default class App extends React.Component {
 						});
 					}}>
 						2 + 3 = { this.state.result }
-				</Text>
+				</Text> */}
 				{/* <PropsTest name="小红" sex='女' /> */}
 				{/* es6延展操作符 */}
 				{/* <PropsTest {...params} />  */}
 				{/* es6解构赋值 */}
-				<PropsTest name={name} sex={sex} />
+				{/* <PropsTest name={name} sex={sex} />
 				<StateTest />
 				<Text
 					ref='test'
@@ -101,8 +105,15 @@ export default class App extends React.Component {
 					}}>
 					获取字体大小: {this.state.size}
 				</Text>
-				<RefTest ref='reftest' />
+				<RefTest ref='reftest' /> */}
 				{/* <RefTest ref={reftest => this.reftests = reftest} />'' */}
+
+				<Text>
+					{this.stu.getDescription()} {/* 创建实例继承 */}
+				</Text>
+				<Text>
+					{this.ming.getDescription()}
+				</Text>
 			</View>
 		);
 	}
