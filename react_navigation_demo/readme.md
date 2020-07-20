@@ -1,0 +1,1 @@
+引入了react-navigation和react-native-gesture-handler
