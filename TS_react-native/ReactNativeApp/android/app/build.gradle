@@ -181,6 +181,9 @@ android {
 }
 
 dependencies {
+    // 引入图标
+    implementation project(':react-native-vector-icons')
+
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
