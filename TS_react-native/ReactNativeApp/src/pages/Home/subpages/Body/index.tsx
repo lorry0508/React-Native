@@ -8,6 +8,7 @@ import {
 import SelectCareer from './SelectCareer';
 import SelectCategory from './SelectCategory';
 import SelectServiceArea from './SelectServiceArea';
+import SelectServicePromise from './SelectServicePromise';
 
 import {
     careerList,
@@ -60,7 +61,13 @@ class Body extends React.PureComponent<{}, IState> {
     // 保存服务区域
     saveServiceArea = (selectedPointAreaIds: number[], selectedOtherAreaIds: number[]) => {
         this.setState({
-          selectedServiceAreaIds: [selectedPointAreaIds, selectedOtherAreaIds],
+            selectedServiceAreaIds: [selectedPointAreaIds, selectedOtherAreaIds],
+        })
+    }
+    // 保存服务承诺
+    saveServicePromise = (yuanchengFeiYongId: number, tailouFeiYongId: number, acceptId: number) => {
+        this.setState({
+            selectedServicePromiseIds: [yuanchengFeiYongId, tailouFeiYongId, acceptId],
         })
     }
     clean = () => {
@@ -100,6 +107,10 @@ class Body extends React.PureComponent<{}, IState> {
                             <SelectServiceArea
                                 selectedServiceAreaIds={selectedServiceAreaIds}
                                 saveServiceArea={this.saveServiceArea}
+                            />
+                            <SelectServicePromise
+                                selectedServicePromiseIds={selectedServicePromiseIds}
+                                saveServicePromise={this.saveServicePromise}
                             />
                         </>
                     )
