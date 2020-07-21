@@ -7,6 +7,7 @@ import {
 
 import SelectCareer from './SelectCareer';
 import SelectCategory from './SelectCategory';
+import SelectServiceArea from './SelectServiceArea';
 
 import {
     careerList,
@@ -56,6 +57,12 @@ class Body extends React.PureComponent<{}, IState> {
         selectedTypeIdLists: newSelectedTypeIdLists,
         });
     }
+    // 保存服务区域
+    saveServiceArea = (selectedPointAreaIds: number[], selectedOtherAreaIds: number[]) => {
+        this.setState({
+          selectedServiceAreaIds: [selectedPointAreaIds, selectedOtherAreaIds],
+        })
+    }
     clean = () => {
         this.setState({
           selectedCategoryIds: [],
@@ -80,13 +87,24 @@ class Body extends React.PureComponent<{}, IState> {
                     isSelectedCareer={isSelectedCareer}
                     onChangeCareer={this.onChangeCareer}
                 />
-                <SelectCategory 
-                    canSelectLength={canSelectLength}
-                    saveCategory={this.saveCategory}
-                    selectedCategoryIds={selectedCategoryIds}
-                    selectedTypeIdLists={selectedTypeIdLists}
-                    clean={this.clean}
-                />
+                {
+                    isSelectedCareer && (
+                        <>
+                            <SelectCategory 
+                                canSelectLength={canSelectLength}
+                                saveCategory={this.saveCategory}
+                                selectedCategoryIds={selectedCategoryIds}
+                                selectedTypeIdLists={selectedTypeIdLists}
+                                clean={this.clean}
+                            />
+                            <SelectServiceArea
+                                selectedServiceAreaIds={selectedServiceAreaIds}
+                                saveServiceArea={this.saveServiceArea}
+                            />
+                        </>
+                    )
+                }
+                
             </View>
         );
     }
