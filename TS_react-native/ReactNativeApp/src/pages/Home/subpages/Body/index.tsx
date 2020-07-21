@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 
 import SelectCareer from './SelectCareer';
+import SelectCategory from './SelectCategory';
 
 import {
     careerList, 
@@ -57,6 +58,7 @@ class Body extends React.PureComponent<{}, IState> {
                     isSelectedCareer={isSelectedCareer}
                     onChangeCareer={this.onChangeCareer}
                 />
+                <SelectCategory />
             </View>
         );
     }
