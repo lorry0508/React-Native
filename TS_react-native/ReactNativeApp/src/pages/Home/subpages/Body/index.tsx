@@ -6,21 +6,16 @@ import {
 } from 'react-native';
 
 import SelectCareer from './SelectCareer';
-import SelectCategory from './SelectCategory';
 
 import {
-    careerList, 
-    ICareer,
+    careerList,
+    ICareer
 } from '../../../../model/data';
 
 interface IState {
     selectedCareerId: number;
     isSelectedCareer: boolean;
     canSelectLength: number;
-    selectedCategoryIds: string[];
-    selectedTypeIdLists: number[][];
-    selectedServiceAreaIds: number[][];
-    selectedServicePromiseIds: number[];
 }
 
 class Body extends React.PureComponent<{}, IState> {
@@ -29,27 +24,19 @@ class Body extends React.PureComponent<{}, IState> {
         this.state = {
             selectedCareerId: 0,
             isSelectedCareer: false,
-            canSelectLength: 3,   // 可以选择的服务品类个数
-            selectedCategoryIds: [],
-            selectedTypeIdLists: [],
-            selectedServiceAreaIds: [],
-            selectedServicePromiseIds: [],
+            canSelectLength: 3, // 可以选择的服务品类种数
         }
     }
-    // 切换职业
     onChangeCareer = (career: ICareer) => {
         const { isSelectedCareer } = this.state;
         this.setState({
-        selectedCareerId: career.id,
-        isSelectedCareer: !isSelectedCareer,
-        canSelectLength: career.id === 0 ? 5 : 3,
+            selectedCareerId: career.id,
+            isSelectedCareer: !isSelectedCareer,
+            canSelectLength: career.id === 0 ? 5 : 3,
         })
     }
     render() {
-        const {
-            selectedCareerId, 
-            isSelectedCareer,
-        } = this.state;
+        const { selectedCareerId, isSelectedCareer  } = this.state;
         return (
             <View>
                 <SelectCareer
@@ -58,7 +45,6 @@ class Body extends React.PureComponent<{}, IState> {
                     isSelectedCareer={isSelectedCareer}
                     onChangeCareer={this.onChangeCareer}
                 />
-                <SelectCategory />
             </View>
         );
     }

@@ -8,24 +8,24 @@ import {
     StyleSheet
 } from 'react-native';
 
-import { ICareer } from '../../../../../model/data';
+import { ICareer, careerList } from '../../../../../model/data';
 
 interface IProps {
     career: ICareer;
     onPress: (career: ICareer) => void;
     checked: boolean;
-    isShowChangeText: boolean;
+    isShowChangeText: boolean
 }
 
 class Career extends React.PureComponent<IProps> {
     onPress = () => {
         const { onPress, career } = this.props;
-        onPress(career);
+        onPress(career); 
     }
     render() {
         const { career, checked, isShowChangeText } = this.props;
         return (
-            <TouchableOpacity 
+            <TouchableOpacity
                 style={styles.container}
                 onPress={this.onPress}
             >
@@ -65,12 +65,12 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         marginBottom: 10,
     },
-    checkedImageView: {
-        borderColor: '#94be49',
-    },
     image: {
         width: 76,
-        height: 76,
+        height: 76
+    },
+    checkedImageView: {
+        borderColor: '#94be49',
     },
     text: {
         color: '#969696',
@@ -90,6 +90,6 @@ const styles = StyleSheet.create({
     changeText: {
         color: '#ffffff',
     }
-})
+});
 
 export default Career;

@@ -12,9 +12,9 @@ import {
 
 interface IProps {
     careerList: ICareer[];
+    onChangeCareer: (career: ICareer) => void;
     selectedCareerId: number;
     isSelectedCareer: boolean;
-    onChangeCareer: (career: ICareer) => void;
 }
 
 /**
@@ -30,13 +30,13 @@ class SelectCareer extends React.PureComponent<IProps> {
         const checked = selectedCareerId === career.id;
         if(isSelectedCareer && !checked) return null;
         return (
-        <Career
-            key={career.id}
-            career={career} 
-            onPress={this.onPress} 
-            checked={checked}
-            isShowChangeText={isSelectedCareer}
-        />
+            <Career
+                key={career.id}
+                career={career} 
+                onPress={this.onPress}  
+                checked={checked}
+                isShowChangeText={isSelectedCareer}
+            />
         )
     }
     
