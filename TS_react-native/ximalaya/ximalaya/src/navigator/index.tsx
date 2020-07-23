@@ -1,12 +1,15 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, StackNavigationProp, HeaderStyleInterpolators, CardStyleInterpolators } from '@react-navigation/stack';
-import Home from '@/pages/Home';
+// import Home from '@/pages/Home';
+import BottomTabs from './BottomTabs';
 import Detail from '@/pages/Detail';
 import { Platform, StyleSheet } from 'react-native';
 
 export type RootStackParamList = {
-    Home: undefined;
+    BottomTabs: {
+        screen?: string
+    };
     Detail: {
         id: number
     };
@@ -26,7 +29,7 @@ class Navigator extends React.Component {
     render() {
         return (
             <NavigationContainer>
-                <Stack.Navigator 
+                <Stack.Navigator
                     headerMode="float"
                     screenOptions={{
                         headerTitleAlign: 'center',
@@ -48,20 +51,20 @@ class Navigator extends React.Component {
                     }}
                 >
                     {/* screenOptions 和 options 效果一样, 二选一使用就行， options层级更高 */}
-                    <Stack.Screen 
-                        name="Home" 
-                        component={Home} 
-                        options={{
-                            headerTitleAlign: 'left',
-                            headerTitle: '首页'
-                        }} 
+                    <Stack.Screen
+                        name="BottomTabs"
+                        component={BottomTabs}
+                        // options={{
+                        //     headerTitleAlign: 'center',
+                        //     headerTitle: '首页'
+                        // }}
                     />
-                    <Stack.Screen 
-                        name="Detail" 
-                        component={Detail} 
+                    <Stack.Screen
+                        name="Detail"
+                        component={Detail}
                         options={{
                             headerTitle: '详情页'
-                        }} 
+                        }}
                     />
                 </Stack.Navigator>
             </NavigationContainer>
