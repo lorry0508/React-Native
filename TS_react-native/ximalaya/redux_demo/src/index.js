@@ -1,10 +1,13 @@
-import {createStore} from 'redux';
+import {createStore, applyMiddleware} from 'redux';
+import createSagaMiddleware from 'redux-saga';
 import render from './render';
 import reducers from './reducers';
+import effects from './effects';
 
-const store = createStore(reducers);
-
+const sagaMiddleware = createSagaMiddleware();
+const store = createStore(reducers, applyMiddleware(sagaMiddleware));
 const state = store.getState();
+sagaMiddleware.run(effects);
 
 // 订阅
 store.subscribe(() => {

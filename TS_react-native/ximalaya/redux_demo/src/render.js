@@ -11,7 +11,7 @@ function render({state, dispatch}) {
     } else {
         button.innerHTML = '登录';
         button.addEventListener('click', function() {
-            dispatch({type: 'login'})
+            dispatch({type: 'ajaxLogin'})
         });
     }
 

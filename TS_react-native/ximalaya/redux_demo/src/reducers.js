@@ -2,7 +2,7 @@ function loginReducers(state = {username: ''}, action) {
     switch(action.type) {
         case 'login':
             return {
-                username: 'chen'
+                username: action.user.username
             }
         case 'logout':
             return {
