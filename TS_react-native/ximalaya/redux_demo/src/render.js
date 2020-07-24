@@ -1,10 +1,21 @@
-function render() {
+function render({state, dispatch}) {
     const div = document.createElement('div');
     const button = document.createElement('button');
     const span = document.createElement('span');
 
-    button.innerHTML = '登录';
-    span.innerHTML = '用户名';
+    if(state.username) {
+        button.innerHTML = '登出';
+        button.addEventListener('click', function() {
+            dispatch({type: 'logout'})
+        });
+    } else {
+        button.innerHTML = '登录';
+        button.addEventListener('click', function() {
+            dispatch({type: 'login'})
+        });
+    }
+
+    span.innerHTML = '用户名：' + state.username;
 
     div.appendChild(button);
     div.appendChild(span);
