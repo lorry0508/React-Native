@@ -13,14 +13,20 @@ interface HomeModel extends Model {
     reducers: {
         add: Reducer<HomeState>
     };
-    // effects: {
-    //     asyncAdd: Effect
-    // }
+    effects: {
+        asyncAdd: Effect
+    }
 }
 
 const initialState = {
     num: 1
 };
+
+function delay(timeout: number) {
+    return new Promise(resolve => {
+        setTimeout(resolve, timeout)
+    })
+}
 
 const homeModel: HomeModel = {
     namespace: 'home',
@@ -33,6 +39,15 @@ const homeModel: HomeModel = {
             };
         }
     },
+    effects: {
+        *asyncAdd({payload}, {call, put}) {
+            yield call(delay, 3000);
+            yield put({
+                type: 'add',
+                payload
+            });
+        }
+    }
 };
 
 export default homeModel;
