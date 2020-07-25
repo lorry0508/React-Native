@@ -4,9 +4,17 @@ import {
     Text,
     Button
 } from 'react-native';
+import { connect, ConnectedProps } from 'react-redux';
 import { RootStackNavigation } from '@/navigator/index';
+import { RootState } from '@/models/index';
 
-interface IProps {
+const mapStateToProps = ({ home }: RootState) => ({
+    num: home.num
+});
+const connector = connect(mapStateToProps);
+
+type MadelState = ConnectedProps<typeof connector>;
+interface IProps extends MadelState {
     navigation: RootStackNavigation;
 }
 
@@ -17,14 +25,25 @@ class Home extends React.Component<IProps> {
             id: 100
         });
     }
+    handleAdd = () => {
+        const { dispatch } = this.props;
+        dispatch({
+            type: 'home/add',
+            payload: {
+                num: 10
+            }
+        });
+    }
     render() {
+        const { num } = this.props;
         return (
             <View>
-                <Text>Home</Text>
+                <Text>Home{num}</Text>
+                <Button title="加" onPress={this.handleAdd} />
                 <Button title="跳转到详情页" onPress={this.onPress} />
             </View>
         );
     }
 }
 
-export default Home;
+export default connector(Home);
