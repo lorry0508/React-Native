@@ -9,7 +9,7 @@ import Account from '@/pages/Account';
 import { RootStackNavigation, RootStackParamList } from '.';
 
 export type BottomTabParamList = {
-    Home:undefined
+    Home: undefined;
     Listen: undefined;
     Found: undefined;
     Account: undefined;
