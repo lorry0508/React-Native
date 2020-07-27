@@ -1,8 +1,12 @@
 import React from 'react';
-import SnapCarousel, { AdditionalParallaxProps } from 'react-native-snap-carousel';
+import SnapCarousel, {
+    ParallaxImage,
+    Pagination,
+    AdditionalParallaxProps,
+}
+    from 'react-native-snap-carousel';
 import { viewportWidth, wp, hp } from '@/utils/index';
-import { Image } from 'react-native';
-import { StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 const data = [
     "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1595840667334&di=b6f9eb1c3080daf1f3991f77126aa8b7&imgtype=0&src=http%3A%2F%2F01.minipic.eastday.com%2F20170421%2F20170421141708_405cb6c3f8850e8d7e1d392eb835e377_3.jpeg",
@@ -20,39 +24,96 @@ const sideHeight = hp(26);
 const itemWidth = sidewidth + wp(2) * 2;
 
 class Carousel extends React.Component {
-    // renderItem = ({ item }: { item.string }, parallaxProps ?: AdditionalParallaxProps) => {
-    //     return (
-    //         <Image source={{ uri: item }} />
-    //     );
-    // }
+    state = {
+        activeSlide: 0
+    };
     renderItem = (
-        {item}: {item: string},
-        parallaxProps?: AdditionalParallaxProps,
+        { item }: { item: string },
+        parallaxProps?: AdditionalParallaxProps, //视差
     ) => {
         return (
-            <Image 
-                style={styles.image} 
-                source={{ uri: item }} 
+            <ParallaxImage
+                source={{ uri: item }}
+                style={styles.image}
+                containerStyle={styles.imageContainer}
+                parallaxFactor={0.8} // 视差滚动速度，默认0.3
+                showSpinner // 动画
+                spinnerColor='rgba(0, 0, 0, 0.25)'
+                {...parallaxProps}
             />
+        );
+    };
+    onSnapToItem = (index: number) => {
+        this.setState({
+            activeSlide: index,
+        });
+    };
+    get pagination() {
+        const { activeSlide } = this.state;
+        return (
+            <View style={styles.paginationWrapper}>
+                <Pagination
+                    containerStyle={styles.paginationContainer}
+                    dotContainerStyle={styles.dotContainer}
+                    dotStyle={styles.dotStyle}
+                    inactiveDotScale={0.7}
+                    inactiveDotOpacity={0.4}
+                    dotsLength={data.length} // 出现的分页个数
+                    activeDotIndex={activeSlide}
+                />
+            </View>
         );
     }
     render() {
         return (
-            <SnapCarousel
-                data={data}
-                renderItem={this.renderItem}
-                sliderWidth={sliderWidth}
-                itemWidth={itemWidth}
-            />
+            <View>
+                <SnapCarousel
+                    data={data}
+                    renderItem={this.renderItem}
+                    sliderWidth={sliderWidth}
+                    itemWidth={itemWidth}
+                    hasParallaxImages // 是否设置视差图
+                    onSnapToItem={this.onSnapToItem} // 获取当期的图片
+                    loop // 设置循环滚动
+                    autoplay // 自动滚动
+                />
+                {this.pagination}
+            </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
-    image: {
+    imageContainer: {
         width: itemWidth,
-        height: sideHeight
-    }
+        height: sideHeight,
+        borderRadius: 8,
+    },
+    image: {
+        ...StyleSheet.absoluteFillObject,
+        resizeMode: 'cover'
+    },
+    paginationWrapper: {
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    paginationContainer: {
+        position: 'absolute',
+        top: -20,
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        paddingHorizontal: 3,
+        paddingVertical: 4,
+        borderRadius: 8,
+    },
+    dotContainer: {
+        marginHorizontal: 6,
+    },
+    dotStyle: {
+        width: 6,
+        height: 6,
+        borderRadius: 3,
+        backgroundColor: 'rgba(255, 255, 255, 0.92)'
+    },
 });
 
 export default Carousel;
