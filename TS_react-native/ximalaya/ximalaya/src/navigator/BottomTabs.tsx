@@ -2,7 +2,7 @@ import React from 'react';
 import { NavigationContainer, RouteProp, TabNavigationState } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from '@/assets/iconfont'
-import Home from '@/pages/Home';
+import HomeTabs from './HomeTabs';
 // import Home from './index';
 import Listen from '@/pages/Listen';
 import Found from '@/pages/Found';
@@ -10,7 +10,7 @@ import Account from '@/pages/Account';
 import { RootStackNavigation, RootStackParamList } from '.';
 
 export type BottomTabParamList = {
-    Home: undefined;
+    HomeTabs: undefined;
     Listen: undefined;
     Found: undefined;
     Account: undefined;
@@ -30,9 +30,9 @@ interface IProps {
 function getHeaderTitle(route: Route) {
     const routeName = route.state 
     ? route.state.routes[route.state.index].name 
-    : route.params?.screen || 'Home';
+    : route.params?.screen || 'HomeTabs';
     switch(routeName) {
-        case 'Home': 
+        case 'HomeTabs': 
             return '首页';
         case 'Listen': 
             return '我听';
@@ -61,8 +61,8 @@ class BottomTabs extends React.Component<IProps> {
                     }}
                 >
                     <Tab.Screen
-                        name="Home"
-                        component={Home}
+                        name="HomeTabs"
+                        component={HomeTabs}
                         options={{
                             tabBarLabel: '首页',
                             tabBarIcon: ({color, size}) => <Icon name='icon-shouye' color={color} size={size} />
