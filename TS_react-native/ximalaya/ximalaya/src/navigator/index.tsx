@@ -54,10 +54,10 @@ class Navigator extends React.Component {
                     <Stack.Screen
                         name="BottomTabs"
                         component={BottomTabs}
-                        // options={{
-                        //     headerTitleAlign: 'center',
-                        //     headerTitle: '首页'
-                        // }}
+                        options={{
+                            // headerTitleAlign: 'center',
+                            headerTitle: '首页'
+                        }}
                     />
                     <Stack.Screen
                         name="Detail"

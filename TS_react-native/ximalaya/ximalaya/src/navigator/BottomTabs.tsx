@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavigationContainer, RouteProp, TabNavigationState } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Icon from '@/assets/iconfont'
 import Home from '@/pages/Home';
 // import Home from './index';
 import Listen from '@/pages/Listen';
@@ -63,28 +64,32 @@ class BottomTabs extends React.Component<IProps> {
                         name="Home"
                         component={Home}
                         options={{
-                            tabBarLabel: '首页'
+                            tabBarLabel: '首页',
+                            tabBarIcon: ({color, size}) => <Icon name='icon-shouye' color={color} size={size} />
                         }}
                     />
                     <Tab.Screen 
                         name="Listen" 
                         component={Listen} 
                         options={{
-                            tabBarLabel: '我听'
+                            tabBarLabel: '我听',
+                            tabBarIcon: ({color, size}) => <Icon name='icon-shoucang' color={color} size={size} />
                         }}
                     />
                     <Tab.Screen 
                         name="Found" 
                         component={Found} 
                         options={{
-                            tabBarLabel: '发现'
+                            tabBarLabel: '发现',
+                            tabBarIcon: ({color, size}) => <Icon name='icon-faxian' color={color} size={size} />
                         }}
                     />
                     <Tab.Screen 
                         name="Account" 
                         component={Account} 
                         options={{
-                            tabBarLabel: '我的'
+                            tabBarLabel: '我的',
+                            tabBarIcon: ({color, size}) => <Icon name='icon-user' color={color} size={size} />
                         }}
                     />
                 </Tab.Navigator>
