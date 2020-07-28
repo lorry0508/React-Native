@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, FlatList, ListRenderItem, ListRenderItemInfo } from 'react-native';
+import { View, FlatList, ListRenderItemInfo } from 'react-native';
 import { connect, ConnectedProps } from 'react-redux';
 import { RootStackNavigation } from '@/navigator/index';
 import { RootState } from '@/models/index';
@@ -57,17 +57,27 @@ class Home extends React.Component<IProps> {
     renderItem = ({item}: ListRenderItemInfo<IChannel>) => {
         return <ChannelItem data={item} />;
     }
-    render() {
-        const { carousels, channels } = this.props;
+    get header() {
+        const { carousels } = this.props;
         return (
-            <ScrollView>
+            <View>
                 <Carousel data={carousels} />
                 <Guess />
-                <FlatList 
-                    data={channels}
-                    renderItem={this.renderItem}
-                />
-            </ScrollView>
+            </View>
+        );
+    }
+    render() {
+        const { channels } = this.props;
+        return (
+            <FlatList 
+                ListHeaderComponent={this.header}
+                data={channels}
+                renderItem={this.renderItem}
+            />
+            // 贴士： 不能直接将FlatList 直接放到ScrollView里面去
+            // <ScrollView>
+                
+            // </ScrollView>
         );
     }
 }

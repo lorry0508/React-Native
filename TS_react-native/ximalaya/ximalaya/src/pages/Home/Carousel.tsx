@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
         width: itemWidth,
         height: sideHeight,
         borderRadius: 8,
+        marginTop: 15,
     },
     image: {
         ...StyleSheet.absoluteFillObject,
