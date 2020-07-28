@@ -1,13 +1,16 @@
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, FlatList, ListRenderItem, ListRenderItemInfo } from 'react-native';
 import { connect, ConnectedProps } from 'react-redux';
 import { RootStackNavigation } from '@/navigator/index';
 import { RootState } from '@/models/index';
 import Carousel from './Carousel';
 import Guess from './Guess';
+import ChannelItem from './ChannelItem';
+import { IChannel } from '@/models/home';
 
 const mapStateToProps = ({ home, loading }: RootState) => ({
     carousels: home.carousels,
+    channels: home.channels,
     loading: loading.effects['home/asyncAdd']
 });
 const connector = connect(mapStateToProps);
@@ -21,7 +24,10 @@ class Home extends React.Component<IProps> {
     componentDidMount() {
         const { dispatch } = this.props;
         dispatch({
-            type: 'home/fetchCarousels',
+            type: 'home/fetchCarousels'
+        });
+        dispatch({
+            type: 'home/fecthChannels'
         });
     };
     onPress = () => {
@@ -48,12 +54,19 @@ class Home extends React.Component<IProps> {
             }
         });
     }
+    renderItem = ({item}: ListRenderItemInfo<IChannel>) => {
+        return <ChannelItem data={item} />;
+    }
     render() {
-        const { carousels } = this.props;
+        const { carousels, channels } = this.props;
         return (
             <ScrollView>
                 <Carousel data={carousels} />
                 <Guess />
+                <FlatList 
+                    data={channels}
+                    renderItem={this.renderItem}
+                />
             </ScrollView>
         );
     }

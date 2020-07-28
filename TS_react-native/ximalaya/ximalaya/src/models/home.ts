@@ -6,6 +6,8 @@ import axios from 'axios';
 const CAROUSEL_URL = '/carousel';
 // 猜你喜欢
 const GUESS_URL = '/guess';
+// 首页列表
+const CHANNEL_URL = '/channel'
 
 export interface ICarousel {
     id: string;
@@ -19,9 +21,19 @@ export interface IGuess {
     image: string;
 }
 
+export interface IChannel {
+    id: string;
+    title: string;
+    image: string;
+    remark: string;
+    played: number;
+    playing: number;
+}
+
 export interface HomeState {
     carousels: ICarousel[];
     guess: IGuess[];
+    channels: IChannel[];
 }
 
 interface HomeModel extends Model {
@@ -33,12 +45,14 @@ interface HomeModel extends Model {
     effects: {
         fetchCarousels: Effect;
         fetchGuess: Effect;
+        fecthChannels: Effect;
     }
 }
 
-const initialState = {
+const initialState: HomeState = {
     carousels: [],
     guess: [],
+    channels: []
 };
 
 const homeModel: HomeModel = {
@@ -71,6 +85,16 @@ const homeModel: HomeModel = {
                     guess: data
                 }
             });
+        },
+        *fecthChannels(_, { call, put }) {
+            const {data} = yield call(axios.get, CHANNEL_URL);
+            console.log(data, "首页数据");
+            yield put({
+                type: 'setState',
+                payload: {
+                    channels: data.results
+                }
+            })
         }
     }
 };
