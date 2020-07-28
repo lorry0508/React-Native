@@ -30,32 +30,14 @@ class Home extends React.Component<IProps> {
             type: 'home/fecthChannels'
         });
     };
-    onPress = () => {
-        const { navigation } = this.props;
-        navigation.navigate('Detail', {
-            id: 100
-        });
+    onPress = (data: IChannel) => {
+        console.log(data);
     }
-    handleAdd = () => {
-        const { dispatch } = this.props;
-        dispatch({
-            type: 'home/add',
-            payload: {
-                num: 10
-            }
-        });
-    }
-    asyncAdd = () => {
-        const { dispatch } = this.props;
-        dispatch({
-            type: 'home/asyncAdd',
-            payload: {
-                num: 2
-            }
-        });
+    keyExtractor = (item: IChannel) => {
+        return item.id;
     }
     renderItem = ({item}: ListRenderItemInfo<IChannel>) => {
-        return <ChannelItem data={item} />;
+        return <ChannelItem data={item} onPress={this.onPress} />;
     }
     get header() {
         const { carousels } = this.props;
@@ -73,6 +55,7 @@ class Home extends React.Component<IProps> {
                 ListHeaderComponent={this.header}
                 data={channels}
                 renderItem={this.renderItem}
+                keyExtractor={this.keyExtractor} // 优化作用,取出key
             />
             // 贴士： 不能直接将FlatList 直接放到ScrollView里面去
             // <ScrollView>
