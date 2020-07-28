@@ -55,7 +55,7 @@ const homeModel: HomeModel = {
     effects: {
         *fetchCarousels(_, { call, put }) {
             const {data} = yield call(axios.get, CAROUSEL_URL);
-            console.log(data, "轮播图数据");
+            // console.log(data, "轮播图数据");
             yield put({
                 type: 'setState',
                 payload: {

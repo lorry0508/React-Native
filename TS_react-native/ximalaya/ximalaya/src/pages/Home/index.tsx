@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { ScrollView } from 'react-native';
 import { connect, ConnectedProps } from 'react-redux';
 import { RootStackNavigation } from '@/navigator/index';
 import { RootState } from '@/models/index';
@@ -51,10 +51,10 @@ class Home extends React.Component<IProps> {
     render() {
         const { carousels } = this.props;
         return (
-            <View>
+            <ScrollView>
                 <Carousel data={carousels} />
                 <Guess />
-            </View>
+            </ScrollView>
         );
     }
 }
