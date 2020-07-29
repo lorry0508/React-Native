@@ -99,7 +99,7 @@ const homeModel: HomeModel = {
                 }
             });
         },
-        *fecthChannels({payload}, { call, put, select }) {
+        *fecthChannels({payload, callback}, { call, put, select }) {
             const {channels, pagination} = yield select((state: RootState) => state.home);
             let page = 1;
             if(payload && payload.loadMore) {
@@ -125,6 +125,9 @@ const homeModel: HomeModel = {
                     }
                 }
             })
+            if(typeof callback === 'function') {
+                callback();
+            }
         }
     }
 };

@@ -21,7 +21,14 @@ interface IProps extends MadelState {
     navigation: RootStackNavigation;
 }
 
-class Home extends React.Component<IProps> {
+interface IState {
+    refreshing: boolean;
+}
+
+class Home extends React.Component<IProps, IState> {
+    state = {
+        refreshing: false
+    }
     componentDidMount() {
         const { dispatch } = this.props;
         dispatch({
@@ -44,6 +51,24 @@ class Home extends React.Component<IProps> {
             type: 'home/fecthChannels',
             payload: {
                 loadMore: true
+            }
+        });
+    }
+    // 下拉刷新
+    onRefresh = () => {
+        // 1.修改刷新状态为true
+        this.setState({
+            refreshing: true
+        })
+        // 2.获取数据
+        const { dispatch } = this.props;
+        dispatch({
+            type: 'home/fecthChannels',
+            callback: () => {
+                // 3.修改刷新状态为false
+                this.setState({
+                    refreshing: false
+                })
             }
         });
     }
@@ -88,18 +113,21 @@ class Home extends React.Component<IProps> {
     }
     render() {
         const { channels } = this.props;
+        const { refreshing } = this.state;
         return (
             // 贴士： 不能直接将FlatList 直接放到ScrollView里面去
             // <ScrollView></ScrollView>
             <FlatList
                 ListHeaderComponent={this.header}
-                ListFooterComponent={this.footer}
-                ListEmptyComponent={this.empty}
+                // ListFooterComponent={this.footer}
+                // ListEmptyComponent={this.empty}
                 data={channels}
                 renderItem={this.renderItem}
                 keyExtractor={this.keyExtractor} // 优化作用,取出key
-                onEndReached={this.onEndReached} // 上拉加载更多
-                onEndReachedThreshold={0.2} // 距离底部多选距离比例时触发
+                // onEndReached={this.onEndReached} // 上拉加载更多
+                // onEndReachedThreshold={0.2} // 距离底部多选距离比例时触发
+                onRefresh={this.onRefresh} // 下拉刷新, 而且不能单独使用
+                refreshing={refreshing}
             />
         );
     }
