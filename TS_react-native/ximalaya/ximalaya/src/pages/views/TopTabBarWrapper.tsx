@@ -93,4 +93,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default TopTabBarWrapper;
+export default connector(TopTabBarWrapper);
