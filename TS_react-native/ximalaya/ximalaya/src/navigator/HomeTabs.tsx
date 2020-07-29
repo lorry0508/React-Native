@@ -1,12 +1,12 @@
 import React from 'react';
-import { createMaterialTopTabNavigator, MaterialTopTabBarOptions } from '@react-navigation/material-top-tabs';
+import { createMaterialTopTabNavigator, MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import Home from '@/pages/Home';
 import TopTabBarWrapper from '@/pages/views/TopTabBarWrapper';
 
 const Tab = createMaterialTopTabNavigator();
 
 class HomeTabs extends React.Component {
-    renderTabBar = (props: MaterialTopTabBarOptions) => {
+    renderTabBar = (props: MaterialTopTabBarProps) => {
         return <TopTabBarWrapper {...props} />;
     }
     render() {
