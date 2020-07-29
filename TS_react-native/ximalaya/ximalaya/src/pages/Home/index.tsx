@@ -76,11 +76,11 @@ class Home extends React.Component<IProps, IState> {
         return <ChannelItem data={item} onPress={this.onPress} />;
     }
     get header() {
-        const { carousels, loading, hasMore } = this.props;
+        const { loading, hasMore } = this.props;
         if (loading || !hasMore) return;
         return (
             <View>
-                <Carousel data={carousels} />
+                <Carousel />
                 <Guess />
             </View>
         );
@@ -119,13 +119,13 @@ class Home extends React.Component<IProps, IState> {
             // <ScrollView></ScrollView>
             <FlatList
                 ListHeaderComponent={this.header}
-                // ListFooterComponent={this.footer}
-                // ListEmptyComponent={this.empty}
+                ListFooterComponent={this.footer}
+                ListEmptyComponent={this.empty}
                 data={channels}
                 renderItem={this.renderItem}
                 keyExtractor={this.keyExtractor} // 优化作用,取出key
-                // onEndReached={this.onEndReached} // 上拉加载更多
-                // onEndReachedThreshold={0.2} // 距离底部多选距离比例时触发
+                onEndReached={this.onEndReached} // 上拉加载更多
+                onEndReachedThreshold={0.2} // 距离底部多选距离比例时触发
                 onRefresh={this.onRefresh} // 下拉刷新, 而且不能单独使用
                 refreshing={refreshing}
             />

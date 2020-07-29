@@ -8,19 +8,24 @@ import SnapCarousel, {
 import { viewportWidth, wp, hp } from '@/utils/index';
 import { View, StyleSheet } from 'react-native';
 import { ICarousel } from '@/models/home';
+import { RootState } from '@/models/index';
+import { connect, ConnectedProps } from 'react-redux';
 
 const sliderWidth = viewportWidth;
 const sidewidth = wp(90);
 const sideHeight = hp(26);
 const itemWidth = sidewidth + wp(2) * 2;
 
-interface IProps {
-    data: ICarousel[];
-}
+const mapStateToProps = ({ home }: RootState) => ({
+    data: home.carousels,
+    activeCarouselIndex: home.activeCarouselIndex
+});
+const connector = connect(mapStateToProps);
+
+type MadelState = ConnectedProps<typeof connector>;
+interface IProps extends MadelState {}
+
 class Carousel extends React.Component<IProps> {
-    state = {
-        activeSlide: 0
-    };
     renderItem = (
         { item }: { item: ICarousel },
         parallaxProps?: AdditionalParallaxProps, //视差
@@ -38,13 +43,16 @@ class Carousel extends React.Component<IProps> {
         );
     };
     onSnapToItem = (index: number) => {
-        this.setState({
-            activeSlide: index,
-        });
+        const {dispatch} = this.props;
+        dispatch({
+            type: 'home/setState',
+            payload: {
+                activeCarouselIndex: index
+            }
+        })
     };
     get pagination() {
-        const { data } = this.props;
-        const { activeSlide } = this.state;
+        const { data, activeCarouselIndex } = this.props;
         return (
             <View style={styles.paginationWrapper}>
                 <Pagination
@@ -54,7 +62,7 @@ class Carousel extends React.Component<IProps> {
                     inactiveDotScale={0.7}
                     inactiveDotOpacity={0.4}
                     dotsLength={data.length} // 出现的分页个数
-                    activeDotIndex={activeSlide}
+                    activeDotIndex={activeCarouselIndex}
                 />
             </View>
         );
@@ -113,4 +121,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Carousel;
+export default connector(Carousel);

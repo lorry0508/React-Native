@@ -2,6 +2,7 @@ import React from 'react';
 import { createMaterialTopTabNavigator, MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import Home from '@/pages/Home';
 import TopTabBarWrapper from '@/pages/views/TopTabBarWrapper';
+import { StyleSheet } from 'react-native';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -14,6 +15,7 @@ class HomeTabs extends React.Component {
             <Tab.Navigator
                 lazy={true} // 对应标签下内容的懒加载, 等同于直接写一个lazy
                 tabBar={this.renderTabBar} // 自定义顶部标签栏
+                sceneContainerStyle={styles.sceneContainer}
                 tabBarOptions={{
                     scrollEnabled: true, // 顶部导航器菜单滑动设置
                     tabStyle: { // 单项所在宽度
@@ -41,5 +43,11 @@ class HomeTabs extends React.Component {
         ); 
     }
 }
+
+const styles = StyleSheet.create({
+    sceneContainer: {
+        backgroundColor: 'transparent'
+    }
+});
 
 export default HomeTabs;

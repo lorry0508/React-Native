@@ -2,16 +2,35 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { MaterialTopTabBar, MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import { getStatusBarHeight } from 'react-native-iphone-x-helper'; // ios 依赖项，用于处理ios的一些问题
+import LinearGradient from 'react-native-linear-gradient';
 import Touchable from '@/components/Touchable';
+import { RootState } from '@/models/index';
+import { connect, ConnectedProps } from 'react-redux';
 
-interface IProps extends MaterialTopTabBarProps {
+const mapStateToProps = ({ home }: RootState) => {
+    return {
+        linearColors: home.carousels ? home.carousels[home.activeCarouselIndex].colors : undefined,
+    };
+};
 
-}
+const connector = connect(mapStateToProps);
+
+type ModelState = ConnectedProps<typeof connector>;
+
+type IProps = MaterialTopTabBarProps & ModelState;
+
 class TopTabBarWrapper extends React.Component<IProps> {
+    get linearGradient() {
+        const { linearColors = ['#ccc', '#e2e2e2'] } = this.props;
+        return (
+            <LinearGradient colors={linearColors} style={styles.gradient} />
+        )
+    }
     render() {
         const { props } = this;
         return (
             <View style={styles.container}>
+                {this.linearGradient}
                 <View style={styles.topTabBarView}>
                     <MaterialTopTabBar {...props} style={styles.tabBar} />
                     <Touchable style={styles.categoryBtn}>
@@ -35,6 +54,10 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#fff',
         paddingTop: getStatusBarHeight()
+    },
+    gradient: {
+        ...StyleSheet.absoluteFillObject,
+        height: 260
     },
     topTabBarView: {
         flexDirection: 'row',
