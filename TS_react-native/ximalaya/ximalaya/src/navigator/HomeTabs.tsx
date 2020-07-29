@@ -1,14 +1,19 @@
 import React from 'react';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { createMaterialTopTabNavigator, MaterialTopTabBarOptions } from '@react-navigation/material-top-tabs';
 import Home from '@/pages/Home';
+import TopTabBarWrapper from '@/pages/views/TopTabBarWrapper';
 
 const Tab = createMaterialTopTabNavigator();
 
 class HomeTabs extends React.Component {
+    renderTabBar = (props: MaterialTopTabBarOptions) => {
+        return <TopTabBarWrapper {...props} />;
+    }
     render() {
         return (
             <Tab.Navigator
                 lazy={true} // 对应标签下内容的懒加载, 等同于直接写一个lazy
+                tabBar={this.renderTabBar} // 自定义顶部标签栏
                 tabBarOptions={{
                     scrollEnabled: true, // 顶部导航器菜单滑动设置
                     tabStyle: { // 单项所在宽度

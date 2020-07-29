@@ -59,7 +59,7 @@ class TopTabBarWrapper extends React.Component<IProps> {
       activeTintColor = '#fff';
       if (indicatorStyle) {
         indicatorStyle = StyleSheet.compose(
-          indicatorStyle,
+          indicatorStyle, 
           styles.whiteBackgroundColor,
         );
       }
