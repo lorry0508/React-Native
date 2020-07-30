@@ -10,7 +10,11 @@ import { connect, ConnectedProps } from 'react-redux';
 const mapStateToProps = ({ home }: RootState) => {
     return {
         gradientVisible: home.gradientVisible,
-        linearColors: home.carousels && home.carousels.length > 0 ? home.carousels[home.activeCarouselIndex] ? home.carousels[home.activeCarouselIndex].colors : undefined : undefined,
+        linearColors: home.carousels && home.carousels.length > 0 
+            ? (home.carousels[home.activeCarouselIndex].colors 
+                ? home.carousels[home.activeCarouselIndex].colors 
+                : undefined) 
+            : undefined,
     };
 };
 
@@ -29,18 +33,21 @@ class TopTabBarWrapper extends React.Component<IProps> {
         return null;
     }
     render() {
-        const { gradientVisible, ...restProps } = this.props;
+        let { gradientVisible, indicatorStyle, ...restProps } = this.props;
         let textStyle = styles.text;
         let activeTintColor = '#333';
         if(gradientVisible) {
             textStyle = styles.witieText;
             activeTintColor = '#fff';
+            if(indicatorStyle) {
+                indicatorStyle = StyleSheet.compose(indicatorStyle, styles.witeBackgroundColor); // 合并两个样式
+            }
         }
         return (
             <View style={styles.container}>
                 {this.linearGradient}
                 <View style={styles.topTabBarView}>
-                    <MaterialTopTabBar activeTintColor={activeTintColor} {...restProps} style={styles.tabBar} />
+                    <MaterialTopTabBar {...restProps} activeTintColor={activeTintColor} indicatorStyle={indicatorStyle} style={styles.tabBar} />
                     <Touchable style={styles.categoryBtn}>
                         <Text style={textStyle}>分类</Text>
                     </Touchable>
@@ -104,6 +111,9 @@ const styles = StyleSheet.create({
     },
     witieText: {
         color: '#fff'
+    },
+    witeBackgroundColor: {
+        backgroundColor: '#fff'
     }
 });
 

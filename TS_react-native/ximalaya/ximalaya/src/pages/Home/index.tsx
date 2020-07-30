@@ -95,7 +95,9 @@ class Home extends React.PureComponent<IProps, IState> {
         return (
             <View>
                 <Carousel />
-                <Guess />
+                <View style={styles.background}>
+                    <Guess />
+                </View>
             </View>
         );
     }
@@ -160,6 +162,10 @@ const styles = StyleSheet.create({
     empty: {
         alignItems: 'center',
         paddingVertical: 100
+    },
+    background: {
+        backgroundColor: '#fff',
+        
     }
 });
 
