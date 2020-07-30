@@ -9,7 +9,8 @@ import { connect, ConnectedProps } from 'react-redux';
 
 const mapStateToProps = ({ home }: RootState) => {
     return {
-        linearColors: home.carousels ? home.carousels[home.activeCarouselIndex] ? home.carousels[home.activeCarouselIndex].colors : undefined : undefined,
+        gradientVisible: home.gradientVisible,
+        linearColors: home.carousels && home.carousels.length > 0 ? home.carousels[home.activeCarouselIndex] ? home.carousels[home.activeCarouselIndex].colors : undefined : undefined,
     };
 };
 
@@ -21,28 +22,35 @@ type IProps = MaterialTopTabBarProps & ModelState;
 
 class TopTabBarWrapper extends React.Component<IProps> {
     get linearGradient() {
-        const { linearColors = ['#ccc', '#e2e2e2'] } = this.props;
-        return (
-            <LinearAnimatedGradientTransition colors={linearColors} style={styles.gradient} />
-        )
+        const { gradientVisible, linearColors = ['#ccc', '#e2e2e2'] } = this.props;
+        if(gradientVisible) {
+            return <LinearAnimatedGradientTransition colors={linearColors} style={styles.gradient} />;
+        }
+        return null;
     }
     render() {
-        const { props } = this;
+        const { gradientVisible, ...restProps } = this.props;
+        let textStyle = styles.text;
+        let activeTintColor = '#333';
+        if(gradientVisible) {
+            textStyle = styles.witieText;
+            activeTintColor = '#fff';
+        }
         return (
             <View style={styles.container}>
                 {this.linearGradient}
                 <View style={styles.topTabBarView}>
-                    <MaterialTopTabBar {...props} style={styles.tabBar} />
+                    <MaterialTopTabBar activeTintColor={activeTintColor} {...restProps} style={styles.tabBar} />
                     <Touchable style={styles.categoryBtn}>
-                        <Text>分类</Text>
+                        <Text style={textStyle}>分类</Text>
                     </Touchable>
                 </View>
                 <View style={styles.bottom}>
                     <Touchable style={styles.searchBtn}>
-                        <Text>搜索按钮</Text>
+                        <Text style={textStyle}>搜索按钮</Text>
                     </Touchable>
                     <Touchable style={styles.historyBtn}>
-                        <Text>历史记录</Text>
+                        <Text style={textStyle}>历史记录</Text>
                     </Touchable>
                 </View>
             </View>
@@ -90,6 +98,12 @@ const styles = StyleSheet.create({
     },
     historyBtn: {
         marginLeft: 24
+    },
+    text: {
+        color: '#333'
+    },
+    witieText: {
+        color: '#fff'
     }
 });
 

@@ -40,6 +40,7 @@ export interface IPagination {
 export interface HomeState {
     carousels: ICarousel[];
     activeCarouselIndex: number; // 当前轮播图下标
+    gradientVisible: boolean; // 渐变色显示隐藏效果
     guess: IGuess[];
     channels: IChannel[];
     pagination: IPagination;
@@ -61,6 +62,7 @@ interface HomeModel extends Model {
 const initialState: HomeState = {
     carousels: [],
     activeCarouselIndex: 0,
+    gradientVisible: true,
     guess: [],
     channels: [],
     pagination: {

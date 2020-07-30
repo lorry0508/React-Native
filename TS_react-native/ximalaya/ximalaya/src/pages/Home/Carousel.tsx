@@ -13,7 +13,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 const sliderWidth = viewportWidth;
 const sidewidth = wp(90);
-const sideHeight = hp(26);
+export const sideHeight = hp(26);
 const itemWidth = sidewidth + wp(2) * 2;
 
 const mapStateToProps = ({ home }: RootState) => ({

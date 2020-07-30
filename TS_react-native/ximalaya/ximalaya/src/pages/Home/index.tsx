@@ -1,15 +1,16 @@
 import React from 'react';
-import { View, Text, FlatList, ListRenderItemInfo, StyleSheet } from 'react-native';
+import { View, Text, FlatList, ListRenderItemInfo, StyleSheet, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
 import { connect, ConnectedProps } from 'react-redux';
 import { RootStackNavigation } from '@/navigator/index';
 import { RootState } from '@/models/index';
-import Carousel from './Carousel';
+import Carousel, { sideHeight } from './Carousel';
 import Guess from './Guess';
 import ChannelItem from './ChannelItem';
 import { IChannel } from '@/models/home';
 
 const mapStateToProps = ({ home, loading }: RootState) => ({
     carousels: home.carousels,
+    gradientVisible: home.gradientVisible,
     channels: home.channels,
     hasMore: home.pagination.hasMore,
     loading: loading.effects['home/fecthChannels']
@@ -75,6 +76,19 @@ class Home extends React.PureComponent<IProps, IState> {
     renderItem = ({ item }: ListRenderItemInfo<IChannel>) => {
         return <ChannelItem data={item} onPress={this.onPress} />;
     }
+    onScroll = ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
+        const offsetY = nativeEvent.contentOffset.y;
+        let newGradientVisible = offsetY < sideHeight;
+        const { dispatch, gradientVisible } = this.props;
+        if(gradientVisible !== newGradientVisible) {
+            dispatch({
+                type: 'home/setState',
+                payload: {
+                    gradientVisible: newGradientVisible,
+                }
+            })
+        }
+    }
     get header() {
         const { loading, hasMore } = this.props;
         if (loading || !hasMore) return;
@@ -104,7 +118,7 @@ class Home extends React.PureComponent<IProps, IState> {
     }
     get empty() {
         const { loading } = this.props;
-        if(loading) return;
+        if (loading) return;
         return (
             <View style={styles.empty}>
                 <Text>暂无数据</Text>
@@ -125,9 +139,10 @@ class Home extends React.PureComponent<IProps, IState> {
                 renderItem={this.renderItem}
                 keyExtractor={this.keyExtractor} // 优化作用,取出key
                 onRefresh={this.onRefresh} // 下拉刷新, 而且不能单独使用
-                refreshing={refreshing} 
+                refreshing={refreshing}
                 onEndReached={this.onEndReached} // 上拉加载更多
                 onEndReachedThreshold={0.2} // 距离底部多选距离比例时触发
+                onScroll={this.onScroll}
             />
         );
     }

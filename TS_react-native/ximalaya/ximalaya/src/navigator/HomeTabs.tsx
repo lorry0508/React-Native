@@ -33,7 +33,14 @@ class HomeTabs extends React.Component {
                 }}
             >
                 <Tab.Screen
-                    name='Home' 
+                    name='Home1' 
+                    component={Home}
+                    options={{
+                        tabBarLabel: '推荐'
+                    }}
+                />
+                <Tab.Screen
+                    name='Home2' 
                     component={Home}
                     options={{
                         tabBarLabel: '推荐'
