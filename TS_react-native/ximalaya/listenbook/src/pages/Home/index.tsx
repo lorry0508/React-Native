@@ -1,22 +1,12 @@
 import React from 'react';
-import {
-  View,
-  FlatList,
-  ListRenderItemInfo,
-  Text,
-  StyleSheet,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
-} from 'react-native';
-import {RootStackNavigation} from '@/navigator/index';
-import {connect, ConnectedProps} from 'react-redux';
-import {RootState} from '@/models/index';
-import Carousel, { sideHeight } from './Carousel';
+import { View, Text, FlatList, ListRenderItemInfo, StyleSheet } from 'react-native';
+import { connect, ConnectedProps } from 'react-redux';
+import { RootStackNavigation } from '@/navigator/index';
+import { RootState } from '@/models/index';
+import Carousel from './Carousel';
 import Guess from './Guess';
 import ChannelItem from './ChannelItem';
-import {IChannel, IGuess} from '@/models/home';
-import { RouteProp } from '@react-navigation/native';
-import { HomeParamList } from '@/navigator/HomeTabs';
+import { IChannel } from '@/models/home';
 
 const mapStateToProps = (state: RootState, {route}: {route: RouteProp<HomeParamList, string>}) => {
   const {namespace} = route.params;

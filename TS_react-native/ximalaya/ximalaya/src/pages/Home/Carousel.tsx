@@ -23,9 +23,9 @@ const mapStateToProps = ({ home }: RootState) => ({
 const connector = connect(mapStateToProps);
 
 type MadelState = ConnectedProps<typeof connector>;
-interface IProps extends MadelState {}
+interface IProps extends MadelState {};
 
-class Carousel extends React.Component<IProps> {
+class Carousel extends React.PureComponent<IProps> {
     renderItem = (
         { item }: { item: ICarousel },
         parallaxProps?: AdditionalParallaxProps, //视差
@@ -43,7 +43,7 @@ class Carousel extends React.Component<IProps> {
         );
     };
     onSnapToItem = (index: number) => {
-        const {dispatch} = this.props;
+        const { dispatch } = this.props;
         dispatch({
             type: 'home/setState',
             payload: {

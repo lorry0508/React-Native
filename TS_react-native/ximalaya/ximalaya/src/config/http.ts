@@ -6,6 +6,7 @@ axios.defaults.baseURL = Config.API_URL;
 // 添加请求拦截器
 axios.interceptors.request.use(
   function(config) {
+    config.headers.icode = '84C68498ABF0FC63';
     console.log('请求config', config);
     return config;
   },

@@ -16,7 +16,7 @@ const connector = connect(mapStateToProps);
 
 type ModelState = ConnectedProps<typeof connector>;
 
-class Guess extends React.Component<ModelState> {
+class Guess extends React.PureComponent<ModelState> {
     componentDidMount() {
         this.fetch();
     }

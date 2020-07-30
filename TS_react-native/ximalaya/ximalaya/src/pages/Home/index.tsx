@@ -25,7 +25,7 @@ interface IState {
     refreshing: boolean;
 }
 
-class Home extends React.Component<IProps, IState> {
+class Home extends React.PureComponent<IProps, IState> {
     state = {
         refreshing: false
     }
@@ -124,10 +124,10 @@ class Home extends React.Component<IProps, IState> {
                 data={channels}
                 renderItem={this.renderItem}
                 keyExtractor={this.keyExtractor} // 优化作用,取出key
+                onRefresh={this.onRefresh} // 下拉刷新, 而且不能单独使用
+                refreshing={refreshing} 
                 onEndReached={this.onEndReached} // 上拉加载更多
                 onEndReachedThreshold={0.2} // 距离底部多选距离比例时触发
-                onRefresh={this.onRefresh} // 下拉刷新, 而且不能单独使用
-                refreshing={refreshing}
             />
         );
     }

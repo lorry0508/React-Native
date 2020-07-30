@@ -2,14 +2,14 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { MaterialTopTabBar, MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import { getStatusBarHeight } from 'react-native-iphone-x-helper'; // ios 依赖项，用于处理ios的一些问题
-import LinearGradient from 'react-native-linear-gradient';
+import LinearAnimatedGradientTransition from 'react-native-linear-gradient';
 import Touchable from '@/components/Touchable';
 import { RootState } from '@/models/index';
 import { connect, ConnectedProps } from 'react-redux';
 
 const mapStateToProps = ({ home }: RootState) => {
     return {
-        linearColors: home.carousels ? home.carousels[home.activeCarouselIndex].colors : undefined,
+        linearColors: home.carousels ? home.carousels[home.activeCarouselIndex] ? home.carousels[home.activeCarouselIndex].colors : undefined : undefined,
     };
 };
 
@@ -23,7 +23,7 @@ class TopTabBarWrapper extends React.Component<IProps> {
     get linearGradient() {
         const { linearColors = ['#ccc', '#e2e2e2'] } = this.props;
         return (
-            <LinearGradient colors={linearColors} style={styles.gradient} />
+            <LinearAnimatedGradientTransition colors={linearColors} style={styles.gradient} />
         )
     }
     render() {

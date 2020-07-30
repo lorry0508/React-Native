@@ -13,7 +13,7 @@ class HomeTabs extends React.Component {
     render() {
         return (
             <Tab.Navigator
-                lazy={true} // 对应标签下内容的懒加载, 等同于直接写一个lazy
+                lazy // 对应标签下内容的懒加载, 等同于直接写一个lazy={true}
                 tabBar={this.renderTabBar} // 自定义顶部标签栏
                 sceneContainerStyle={styles.sceneContainer}
                 tabBarOptions={{
