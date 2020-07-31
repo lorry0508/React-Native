@@ -25,12 +25,13 @@ const cached: Cached = {
 }
 
 function registerModel(model: Model) {
-    if(cached[model.namespace]) {
-        
+    if(!cached[model.namespace]) {
+        app.model(model);
+        cached[model.namespace] = true;
     }
 }
 
-function createHomeModel(namespace: string) {
+export function createHomeModel(namespace: string) {
     const model = modelExtend(homeModel, {namespace});
-    app.model(model);
+    registerModel(model);
 }

@@ -7,14 +7,21 @@ import Carousel, { sideHeight } from './Carousel';
 import Guess from './Guess';
 import ChannelItem from './ChannelItem';
 import { IChannel } from '@/models/home';
+import { RouteProp } from '@react-navigation/native';
+import { HomeParamList } from '@/navigator/HomeTabs';
 
-const mapStateToProps = ({ home, loading }: RootState) => ({
-    carousels: home.carousels,
-    gradientVisible: home.gradientVisible,
-    channels: home.channels,
-    hasMore: home.pagination.hasMore,
-    loading: loading.effects['home/fecthChannels']
-});
+const mapStateToProps = (state: RootState, { route }: { route: RouteProp<HomeParamList, string> }) => {
+    const { namespace } = route.params;
+    const modelState = state[namespace];
+    return {
+        namespace,
+        carousels: modelState.carousels,
+        gradientVisible: modelState.gradientVisible,
+        channels: modelState.channels,
+        hasMore: modelState.pagination.hasMore,
+        loading: state.loading.effects[namespace + '/fecthChannels']
+    };
+}
 const connector = connect(mapStateToProps);
 
 type MadelState = ConnectedProps<typeof connector>;
@@ -31,12 +38,12 @@ class Home extends React.PureComponent<IProps, IState> {
         refreshing: false
     }
     componentDidMount() {
-        const { dispatch } = this.props;
+        const { dispatch, namespace } = this.props;
         dispatch({
-            type: 'home/fetchCarousels'
+            type: namespace + '/fetchCarousels'
         });
         dispatch({
-            type: 'home/fecthChannels'
+            type: namespace + '/fecthChannels'
         });
     };
     onPress = (data: IChannel) => {
@@ -47,9 +54,9 @@ class Home extends React.PureComponent<IProps, IState> {
     }
     // 加载更多
     onEndReached = () => {
-        const { dispatch } = this.props;
+        const { dispatch, namespace } = this.props;
         dispatch({
-            type: 'home/fecthChannels',
+            type: namespace + '/fecthChannels',
             payload: {
                 loadMore: true
             }
@@ -62,9 +69,9 @@ class Home extends React.PureComponent<IProps, IState> {
             refreshing: true
         })
         // 2.获取数据
-        const { dispatch } = this.props;
+        const { dispatch, namespace } = this.props;
         dispatch({
-            type: 'home/fecthChannels',
+            type: namespace + '/fecthChannels',
             callback: () => {
                 // 3.修改刷新状态为false
                 this.setState({
@@ -79,10 +86,10 @@ class Home extends React.PureComponent<IProps, IState> {
     onScroll = ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
         const offsetY = nativeEvent.contentOffset.y;
         let newGradientVisible = offsetY < sideHeight;
-        const { dispatch, gradientVisible } = this.props;
-        if(gradientVisible !== newGradientVisible) {
+        const { dispatch, namespace, gradientVisible } = this.props;
+        if (gradientVisible !== newGradientVisible) {
             dispatch({
-                type: 'home/setState',
+                type: namespace + '/setState',
                 payload: {
                     gradientVisible: newGradientVisible,
                 }
@@ -90,13 +97,13 @@ class Home extends React.PureComponent<IProps, IState> {
         }
     }
     get header() {
-        const { loading, hasMore } = this.props;
+        const { loading, hasMore, namespace } = this.props;
         if (loading || !hasMore) return;
         return (
             <View>
                 <Carousel />
                 <View style={styles.background}>
-                    <Guess />
+                    <Guess namespace={namespace} />
                 </View>
             </View>
         );
@@ -165,7 +172,7 @@ const styles = StyleSheet.create({
     },
     background: {
         backgroundColor: '#fff',
-        
+
     }
 });
 

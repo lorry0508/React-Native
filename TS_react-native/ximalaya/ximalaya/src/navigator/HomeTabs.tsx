@@ -6,9 +6,12 @@ import { StyleSheet } from 'react-native';
 import { RootState } from '@/models/index';
 import { connect, ConnectedProps } from 'react-redux';
 import { ICategory } from '@/models/category';
+import { createHomeModel } from '@/config/dva';
 
-type HomeParamList = {
-    [key: string]: undefined;
+export type HomeParamList = {
+    [key: string]: {
+        namespace: string
+    };
 }
 
 const Tab = createMaterialTopTabNavigator<HomeParamList>();
@@ -30,6 +33,7 @@ class HomeTabs extends React.Component<IProps> {
         return <TopTabBarWrapper {...props} />;
     }
     renderScreen = (item: ICategory) => {
+        createHomeModel(item.id);
         return (
             <Tab.Screen
                 key={item.id}
@@ -37,6 +41,9 @@ class HomeTabs extends React.Component<IProps> {
                 component={Home}
                 options={{
                     tabBarLabel: item.name
+                }}
+                initialParams={{
+                    namespace: item.id
                 }}
             />
         );

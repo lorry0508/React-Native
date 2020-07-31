@@ -6,14 +6,17 @@ import LinearAnimatedGradientTransition from 'react-native-linear-gradient';
 import Touchable from '@/components/Touchable';
 import { RootState } from '@/models/index';
 import { connect, ConnectedProps } from 'react-redux';
+import { getActiveRouteName } from '@/utils/index';
 
-const mapStateToProps = ({ home }: RootState) => {
+const mapStateToProps = (state: RootState, props: MaterialTopTabBarProps) => {
+    const routeName = getActiveRouteName(props.state);
+    const modelState = state[routeName];
     return {
-        gradientVisible: home.gradientVisible,
-        linearColors: home.carousels && home.carousels.length > 0 
-            ? (home.carousels[home.activeCarouselIndex].colors 
-                ? home.carousels[home.activeCarouselIndex].colors 
-                : undefined) 
+        gradientVisible: modelState.gradientVisible,
+        linearColors: modelState.carousels && modelState.carousels.length > 0
+            ? (modelState.carousels[modelState.activeCarouselIndex].colors
+                ? modelState.carousels[modelState.activeCarouselIndex].colors
+                : undefined)
             : undefined,
     };
 };
@@ -31,7 +34,7 @@ class TopTabBarWrapper extends React.Component<IProps> {
     }
     get linearGradient() {
         const { gradientVisible, linearColors = ['#ccc', '#e2e2e2'] } = this.props;
-        if(gradientVisible) {
+        if (gradientVisible) {
             return <LinearAnimatedGradientTransition colors={linearColors} style={styles.gradient} />;
         }
         return null;
@@ -40,10 +43,10 @@ class TopTabBarWrapper extends React.Component<IProps> {
         let { gradientVisible, indicatorStyle, ...restProps } = this.props;
         let textStyle = styles.text;
         let activeTintColor = '#333';
-        if(gradientVisible) {
+        if (gradientVisible) {
             textStyle = styles.witieText;
             activeTintColor = '#fff';
-            if(indicatorStyle) {
+            if (indicatorStyle) {
                 indicatorStyle = StyleSheet.compose(indicatorStyle, styles.witeBackgroundColor); // 合并两个样式
             }
         }
