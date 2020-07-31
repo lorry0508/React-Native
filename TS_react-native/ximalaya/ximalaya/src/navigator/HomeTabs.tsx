@@ -3,14 +3,46 @@ import { createMaterialTopTabNavigator, MaterialTopTabBarProps } from '@react-na
 import Home from '@/pages/Home';
 import TopTabBarWrapper from '@/pages/views/TopTabBarWrapper';
 import { StyleSheet } from 'react-native';
+import { RootState } from '@/models/index';
+import { connect, ConnectedProps } from 'react-redux';
+import { ICategory } from '@/models/category';
 
-const Tab = createMaterialTopTabNavigator();
+type HomeParamList = {
+    [key: string]: undefined;
+}
 
-class HomeTabs extends React.Component {
+const Tab = createMaterialTopTabNavigator<HomeParamList>();
+
+const mapStateToProps = ({ category }: RootState) => {
+    return {
+        myCategorys: category.myCategorys
+    };
+};
+
+const connector = connect(mapStateToProps);
+
+type ModelState = ConnectedProps<typeof connector>;
+
+interface IProps extends ModelState { }
+
+class HomeTabs extends React.Component<IProps> {
     renderTabBar = (props: MaterialTopTabBarProps) => {
         return <TopTabBarWrapper {...props} />;
     }
+    renderScreen = (item: ICategory) => {
+        return (
+            <Tab.Screen
+                key={item.id}
+                name={item.id}
+                component={Home}
+                options={{
+                    tabBarLabel: item.name
+                }}
+            />
+        );
+    }
     render() {
+        const { myCategorys } = this.props;
         return (
             <Tab.Navigator
                 lazy // 对应标签下内容的懒加载, 等同于直接写一个lazy={true}
@@ -32,15 +64,11 @@ class HomeTabs extends React.Component {
                     inactiveTintColor: '#333', // 未选中字体颜色
                 }}
             >
-                <Tab.Screen
-                    name='Home' 
-                    component={Home}
-                    options={{
-                        tabBarLabel: '推荐'
-                    }}
-                />
+                {
+                    myCategorys.map(this.renderScreen)
+                }
             </Tab.Navigator>
-        ); 
+        );
     }
 }
 
@@ -50,4 +78,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default HomeTabs;
+export default connector(HomeTabs);
