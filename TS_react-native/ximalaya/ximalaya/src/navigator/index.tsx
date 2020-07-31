@@ -39,7 +39,13 @@ class Navigator extends React.Component {
                         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS, // 内容动画效果
                         gestureEnabled: true, // 默认手势是关闭的，设置为开启
                         gestureDirection: 'horizontal', // 默认手势方向为垂直方向，改为竖直方向
-                        headerStatusBarHeight: StatusBar.currentHeight,
+                        ...Platform.select({
+                            android: {
+                                headerStatusBarHeight: StatusBar.currentHeight,
+                            }
+                        }),
+                        headerBackTitleVisible: false,
+                        headerTintColor: '#333',
                         headerStyle: { // 标题栏样式
                             // backgroundColor: 'red',
                             ...Platform.select({ // 平台的选择

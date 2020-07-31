@@ -5,6 +5,8 @@ import { RootState } from '@/models/index';
 import { connect, ConnectedProps } from 'react-redux';
 import { ICategory } from '@/models/category';
 import Item from './Item';
+import { RootStackNavigation } from '@/navigator/index';
+import HeaderRightBtn from './HeaderRightBtn';
 
 const mapStateToProps = ({ category }: RootState) => {
     return {
@@ -17,7 +19,9 @@ const connector = connect(mapStateToProps);
 
 type ModelState = ConnectedProps<typeof connector>;
 
-interface IProps extends ModelState { }
+interface IProps extends ModelState {
+    navigation: RootStackNavigation
+}
 
 interface IState {
     myCategorys: ICategory[]
@@ -27,6 +31,18 @@ class Category extends React.Component<IProps, IState> {
     state = {
         myCategorys: this.props.myCategorys
     };
+    constructor(props: IProps) {
+        super(props);
+        props.navigation.setOptions({
+            headerRight: () => <HeaderRightBtn onSubmit={this.onSubmit} />
+        })
+    }
+    onSubmit = () => {
+        const { dispatch } = this.props;
+        dispatch({
+            type: 'category/toggle'
+        })
+    }
     renderItem = (item: ICategory, index: number) => {
         return <Item data={item} key={index} />;
     }
