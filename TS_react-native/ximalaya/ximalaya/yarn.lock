@@ -6769,6 +6769,11 @@ react-native-config@^1.3.1:
   resolved "https://registry.npmjs.org/react-native-config/-/react-native-config-1.3.1.tgz#d1e86031c49b2b1b968ebb158ac02a293acce0b8"
   integrity sha512-Wmkn6WjCc1P0k77FiYQdRTU3AE9fR01vbkETLp9u5OK6+6kfsTbmFZwjMPE0Ao8LbRQP3mStK7niheKCFyIENA==
 
+react-native-drag-sort@^2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/react-native-drag-sort/-/react-native-drag-sort-2.2.4.tgz#3f98372264287be8a50d697d6a6420774d4d6bf0"
+  integrity sha512-X5Hw/S0seKf86zTJZK+7L/RVaGkvGQu5A7Ot2dhIp77P6plpIPy8SyMrLV2hGBal/3cokF0bbj+TYrKzmeJ59w==
+
 react-native-gesture-handler@^1.7.0:
   version "1.7.0"
   resolved "https://registry.npmjs.org/react-native-gesture-handler/-/react-native-gesture-handler-1.7.0.tgz#0ef74a5ba836832e497dc49eb1ce58baa6c617e5"

@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import _ from 'lodash';
+import { DragSortableView } from 'react-native-drag-sort';
 import { RootState } from '@/models/index';
 import { connect, ConnectedProps } from 'react-redux';
 import { ICategory } from '@/models/category';
-import Item from './Item';
+import Item, { parentWidth, itemWidth, itemHeight, margin } from './Item';
 import { RootStackNavigation } from '@/navigator/index';
 import HeaderRightBtn from './HeaderRightBtn';
 import Touchable from '@/components/Touchable';
@@ -51,14 +52,17 @@ class Category extends React.Component<IProps, IState> {
         })
     }
     onSubmit = () => {
-        const { dispatch } = this.props;
+        const { dispatch, navigation, isEdit } = this.props;
         const { myCategorys } = this.state;
         dispatch({
             type: 'category/toggle',
             payload: {
                 myCategorys
             }
-        })
+        });
+        if(isEdit) {
+            navigation.goBack();
+        }
     }
     onLongPress = () => {
         const { dispatch } = this.props;
@@ -73,7 +77,7 @@ class Category extends React.Component<IProps, IState> {
         const { isEdit } = this.props;
         const { myCategorys } = this.state;
         const disabled = fixedItems.indexOf(index) > -1;
-        if(disabled) return;
+        if (disabled) return;
         if (isEdit) {
             if (selected) {
                 this.setState({
@@ -86,18 +90,24 @@ class Category extends React.Component<IProps, IState> {
             }
         }
     }
+    onClickItem = (data: ICategory[], item: ICategory) => {
+        this.onPress(item, data.indexOf(item), true);
+    }
+    onDataChange = (data: ICategory[]) => {
+        this.setState({
+            myCategorys: data
+        })
+    }
     renderItem = (item: ICategory, index: number) => {
         const { isEdit } = this.props;
         const disabled = fixedItems.indexOf(index) > -1;
         return (
-            <Touchable key={item.id} onPress={() => this.onPress(item, index, true)} onLongPress={this.onLongPress}>
-                <Item
-                    data={item}
-                    isEdit={isEdit}
-                    disabled={disabled}
-                    selected
-                />
-            </Touchable>
+            <Item
+                data={item}
+                isEdit={isEdit}
+                disabled={disabled}
+                selected
+            />
         );
     }
     renderUnSelectedItem = (item: ICategory, index: number) => {
@@ -113,14 +123,26 @@ class Category extends React.Component<IProps, IState> {
         );
     }
     render() {
-        const { categorys } = this.props;
+        const { categorys, isEdit } = this.props;
         const { myCategorys } = this.state;
         const classifyGroup = _.groupBy(categorys, (item) => item.classify);
         return (
             <ScrollView style={styles.container}>
                 <Text style={styles.classifyName}>我的分类</Text>
                 <View style={styles.classifyView}>
-                    {myCategorys.map(this.renderItem)}
+                    <DragSortableView 
+                        dataSource={myCategorys}
+                        fixedItems={fixedItems}
+                        renderItem={this.renderItem}
+                        sortable={isEdit}
+                        keyExtractor={Item => Item.id}
+                        onDataChange={this.onDataChange}
+                        parentWidth={parentWidth}
+                        childrenWidth={itemWidth}
+                        childrenHeight={itemHeight}
+                        marginChildrenTop={margin}
+                        onClickItem={this.onClickItem}
+                    />
                 </View>
                 <View>
                     {
