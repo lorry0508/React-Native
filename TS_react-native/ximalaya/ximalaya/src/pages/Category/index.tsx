@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import _ from 'lodash';
 import { RootState } from '@/models/index';
 import { connect, ConnectedProps } from 'react-redux';
 import { ICategory } from '@/models/category';
-import { viewportWidth } from '@/utils/index';
+import Item from './Item';
 
 const mapStateToProps = ({ category }: RootState) => {
     return {
@@ -22,38 +23,38 @@ interface IState {
     myCategorys: ICategory[]
 }
 
-const parentWidth = viewportWidth - 10;
-const itemWidth = parentWidth / 4;
-
 class Category extends React.Component<IProps, IState> {
     state = {
         myCategorys: this.props.myCategorys
     };
     renderItem = (item: ICategory, index: number) => {
-        return (
-            <View key={item.id} style={{width: itemWidth, height: 40,}}>
-                <View style={{flex: 1, backgroundColor: '#fff', margin: 5, justifyContent: 'center', alignItems: 'center'}}>
-                    <Text>{item.name}</Text>
-                </View>
-            </View>
-        )
+        return <Item data={item} key={index} />;
     }
     render() {
         const { categorys } = this.props;
         const { myCategorys } = this.state;
+        const classifyGroup = _.groupBy(categorys, (item) => item.classify);
         return (
-            <View style={styles.container}>
+            <ScrollView style={styles.container}>
                 <Text style={styles.classifyName}>我的分类</Text>
                 <View style={styles.classifyView}>
                     {myCategorys.map(this.renderItem)}
                 </View>
                 <View>
-                    <Text>所有分类</Text>
-                    <View style={styles.classifyView}>
-                        {categorys.map(this.renderItem)}
-                    </View>
+                    {
+                        Object.keys(classifyGroup).map(classify => {
+                            return (
+                                <View key={classify}>
+                                    <Text style={styles.classifyName}>{classify}</Text>
+                                    <View style={styles.classifyView}>
+                                        {classifyGroup[classify].map(this.renderItem)}
+                                    </View>
+                                </View>
+                            );
+                        })
+                    }
                 </View>
-            </View>
+            </ScrollView>
         );
     }
 }
@@ -66,7 +67,8 @@ const styles = StyleSheet.create({
     classifyName: {
         fontSize: 16,
         marginTop: 14,
-        marginBottom: 8
+        marginBottom: 8,
+        marginLeft: 10
     },
     classifyView: {
         flexDirection: 'row',
