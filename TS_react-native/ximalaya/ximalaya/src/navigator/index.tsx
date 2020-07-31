@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, StackNavigationProp, HeaderStyleInterpolators, CardStyleInterpolators } from '@react-navigation/stack';
 // import Home from '@/pages/Home';
 import BottomTabs from './BottomTabs';
+import Category from '@/pages/Category';
 import Detail from '@/pages/Detail';
 import { Platform, StyleSheet, StatusBar } from 'react-native';
 
@@ -10,6 +11,7 @@ export type RootStackParamList = {
     BottomTabs: {
         screen?: string
     };
+    Category: undefined;
     Detail: {
         id: number
     };
@@ -57,8 +59,14 @@ class Navigator extends React.Component {
                         name="BottomTabs"
                         component={BottomTabs}
                         options={{
-                            // headerTitleAlign: 'center',
                             headerTitle: '首页'
+                        }}
+                    />
+                    <Stack.Screen
+                        name="Category"
+                        component={Category}
+                        options={{
+                            headerTitle: '分类'
                         }}
                     />
                     <Stack.Screen

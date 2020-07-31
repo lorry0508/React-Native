@@ -1,19 +1,19 @@
 import { Model, Effect, SubscriptionsMapObject } from "dva-core-ts";
 import { Reducer } from "redux";
-import storage from "@/config/storage";
+import storage, { load } from "@/config/storage";
 import axios from "axios";
 
 const CATEGORY_URL = '/category';
 
-interface ICategoty {
+export interface ICategory {
     id: string;
     name: string;
     classify?: string;
 }
 
 interface CategoryModelState {
-    myCategorys: ICategoty[];
-    categorys: ICategoty[];
+    myCategorys: ICategory[];
+    categorys: ICategory[];
 }
 
 interface CategoryModel extends Model {
@@ -84,7 +84,7 @@ const categoryModel: CategoryModel = {
         asyncStorage() {
             storage.sync.categorys = async () => {
                 const { data } = await axios.get(CATEGORY_URL);
-                return data.data;
+                return data;
             }
             storage.sync.myCategorys = async () => {
                 return null;
