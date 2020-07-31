@@ -12,7 +12,7 @@ const mapStateToProps = ({ category }: RootState) => {
 const connector = connect(mapStateToProps);
 
 type ModelState = ConnectedProps<typeof connector>;
-
+ 
 interface IProps extends ModelState {
     onSubmit: () => void;
 }

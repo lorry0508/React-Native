@@ -7,11 +7,13 @@ import { ICategory } from '@/models/category';
 import Item from './Item';
 import { RootStackNavigation } from '@/navigator/index';
 import HeaderRightBtn from './HeaderRightBtn';
+import Touchable from '@/components/Touchable';
 
 const mapStateToProps = ({ category }: RootState) => {
     return {
         myCategorys: category.myCategorys,
-        categorys: category.categorys
+        categorys: category.categorys,
+        isEdit: category.isEdit
     };
 };
 
@@ -37,14 +39,59 @@ class Category extends React.Component<IProps, IState> {
             headerRight: () => <HeaderRightBtn onSubmit={this.onSubmit} />
         })
     }
+    componentWillUnmount() {
+        const { dispatch } = this.props;
+        dispatch({
+            type: 'category/setState',
+            payload: {
+                isEdit: false
+            }
+        })
+    }
     onSubmit = () => {
         const { dispatch } = this.props;
         dispatch({
             type: 'category/toggle'
         })
     }
+    onLongPress = () => {
+        const { dispatch } = this.props;
+        dispatch({
+            type: 'category/setState',
+            payload: {
+                isEdit: true
+            }
+        })
+    }
+    onPress = (item: ICategory, index: number) => {
+        const { isEdit } = this.props;
+        const { myCategorys } = this.state;
+        if (isEdit) {
+            this.setState({
+                myCategorys: myCategorys.concat(item)
+            })
+        }
+    }
     renderItem = (item: ICategory, index: number) => {
-        return <Item data={item} key={index} />;
+        const { isEdit } = this.props;
+        return <Item
+            key={item.id}
+            data={item}
+            isEdit={isEdit}
+            selected
+        />;
+    }
+    renderUnSelectedItem = (item: ICategory, index: number) => {
+        const { isEdit } = this.props;
+        return (
+            <Touchable key={item.id} onPress={() => this.onPress(item, index)} onLongPress={this.onLongPress}>
+                <Item
+                    data={item}
+                    isEdit={isEdit}
+                    selected={false}
+                />
+            </Touchable>
+        );
     }
     render() {
         const { categorys } = this.props;
@@ -63,7 +110,7 @@ class Category extends React.Component<IProps, IState> {
                                 <View key={classify}>
                                     <Text style={styles.classifyName}>{classify}</Text>
                                     <View style={styles.classifyView}>
-                                        {classifyGroup[classify].map(this.renderItem)}
+                                        {classifyGroup[classify].map(this.renderUnSelectedItem)}
                                     </View>
                                 </View>
                             );
