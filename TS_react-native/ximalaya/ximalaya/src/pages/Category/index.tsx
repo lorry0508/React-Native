@@ -29,6 +29,8 @@ interface IState {
     myCategorys: ICategory[]
 }
 
+const fixedItems = [0, 1];
+
 class Category extends React.Component<IProps, IState> {
     state = {
         myCategorys: this.props.myCategorys
@@ -50,8 +52,12 @@ class Category extends React.Component<IProps, IState> {
     }
     onSubmit = () => {
         const { dispatch } = this.props;
+        const { myCategorys } = this.state;
         dispatch({
-            type: 'category/toggle'
+            type: 'category/toggle',
+            payload: {
+                myCategorys
+            }
         })
     }
     onLongPress = () => {
@@ -63,28 +69,41 @@ class Category extends React.Component<IProps, IState> {
             }
         })
     }
-    onPress = (item: ICategory, index: number) => {
+    onPress = (item: ICategory, index: number, selected: boolean) => {
         const { isEdit } = this.props;
         const { myCategorys } = this.state;
+        const disabled = fixedItems.indexOf(index) > -1;
+        if(disabled) return;
         if (isEdit) {
-            this.setState({
-                myCategorys: myCategorys.concat(item)
-            })
+            if (selected) {
+                this.setState({
+                    myCategorys: myCategorys.filter(selectedItem => selectedItem.id !== item.id)
+                })
+            } else {
+                this.setState({
+                    myCategorys: myCategorys.concat([item])
+                })
+            }
         }
     }
     renderItem = (item: ICategory, index: number) => {
         const { isEdit } = this.props;
-        return <Item
-            key={item.id}
-            data={item}
-            isEdit={isEdit}
-            selected
-        />;
+        const disabled = fixedItems.indexOf(index) > -1;
+        return (
+            <Touchable key={item.id} onPress={() => this.onPress(item, index, true)} onLongPress={this.onLongPress}>
+                <Item
+                    data={item}
+                    isEdit={isEdit}
+                    disabled={disabled}
+                    selected
+                />
+            </Touchable>
+        );
     }
     renderUnSelectedItem = (item: ICategory, index: number) => {
         const { isEdit } = this.props;
         return (
-            <Touchable key={item.id} onPress={() => this.onPress(item, index)} onLongPress={this.onLongPress}>
+            <Touchable key={item.id} onPress={() => this.onPress(item, index, false)} onLongPress={this.onLongPress}>
                 <Item
                     data={item}
                     isEdit={isEdit}
@@ -110,7 +129,12 @@ class Category extends React.Component<IProps, IState> {
                                 <View key={classify}>
                                     <Text style={styles.classifyName}>{classify}</Text>
                                     <View style={styles.classifyView}>
-                                        {classifyGroup[classify].map(this.renderUnSelectedItem)}
+                                        {classifyGroup[classify].map((item, index) => {
+                                            if (myCategorys.find(selectedItem => selectedItem.id === item.id)) {
+                                                return null;
+                                            }
+                                            return this.renderUnSelectedItem(item, index);
+                                        })}
                                     </View>
                                 </View>
                             );
