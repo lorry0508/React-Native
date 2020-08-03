@@ -5,7 +5,6 @@ import { createStackNavigator, StackNavigationProp, HeaderStyleInterpolators, Ca
 import BottomTabs from './BottomTabs';
 import Category from '@/pages/Category';
 import Album from '@/pages/Album';
-import Detail from '@/pages/Detail';
 import { Platform, StyleSheet, StatusBar } from 'react-native';
 import Animated from 'react-native-reanimated';
 

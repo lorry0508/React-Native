@@ -16,7 +16,7 @@ interface IProgram {
 // 作者
 interface IAuthor {
     name: string;
-    avator: string;
+    avatar: string;
 }
 
 export interface IAlbumModelState {
@@ -48,7 +48,7 @@ const initialState: IAlbumModelState = {
     introduction: '',
     author: {
         name: '',
-        avator: ''
+        avatar: ''
     },
     list: []
 };
