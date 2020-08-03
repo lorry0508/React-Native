@@ -6,7 +6,7 @@ import { RootState } from '@/models/index';
 import Carousel, { sideHeight } from './Carousel';
 import Guess from './Guess';
 import ChannelItem from './ChannelItem';
-import { IChannel } from '@/models/home';
+import { IChannel, IGuess } from '@/models/home';
 import { RouteProp } from '@react-navigation/native';
 import { HomeParamList } from '@/navigator/HomeTabs';
 
@@ -46,8 +46,9 @@ class Home extends React.PureComponent<IProps, IState> {
             type: namespace + '/fecthChannels'
         });
     };
-    onPress = (data: IChannel) => {
-        console.log(data);
+    goAlbum = (data: IChannel | IGuess) => {
+        const { navigation } = this.props;
+        navigation.navigate('Album', {item: data});
     }
     keyExtractor = (item: IChannel) => {
         return item.id;
@@ -81,7 +82,7 @@ class Home extends React.PureComponent<IProps, IState> {
         });
     }
     renderItem = ({ item }: ListRenderItemInfo<IChannel>) => {
-        return <ChannelItem data={item} onPress={this.onPress} />;
+        return <ChannelItem data={item} onPress={this.goAlbum} />;
     }
     onScroll = ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
         const offsetY = nativeEvent.contentOffset.y;
@@ -103,7 +104,7 @@ class Home extends React.PureComponent<IProps, IState> {
             <View>
                 <Carousel />
                 <View style={styles.background}>
-                    <Guess namespace={namespace} />
+                    <Guess namespace={namespace} goAlbum={this.goAlbum} />
                 </View>
             </View>
         );

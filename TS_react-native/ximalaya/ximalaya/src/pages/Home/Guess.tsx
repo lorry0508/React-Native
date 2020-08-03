@@ -18,6 +18,7 @@ type ModelState = ConnectedProps<typeof connector>;
 
 interface IProps extends ModelState {
     namespace: string;
+    goAlbum: (item: IGuess) => void;
 }
 
 class Guess extends React.PureComponent<IProps> {
@@ -30,9 +31,10 @@ class Guess extends React.PureComponent<IProps> {
             type: namespace + '/fetchGuess'
         });
     }
-    renderItem = ({item}: {item: IGuess}) => {
+    renderItem = ({ item }: { item: IGuess }) => {
+        const { goAlbum } = this.props;
         return (
-            <Touchable style={styles.item} onPress={() => {}}>
+            <Touchable style={styles.item} onPress={() => { goAlbum(item) }}>
                 <Image source={{ uri: item.image }} style={styles.image} />
                 <Text numberOfLines={2}>{item.title}</Text>
             </Touchable>
