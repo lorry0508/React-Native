@@ -7,6 +7,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '@/navigator/index';
 import coverRight from '@/assets/cover-right.png';
+import Tab from './Tab';
 
 const mapStateToProps = ({ album }: RootState) => {
     return {
@@ -62,14 +63,18 @@ class Album extends React.Component<IProps> {
     }
     render() {
         return (
-            <View>
+            <View style={styles.container}>
                 {this.renderHeader()}
+                <Tab />
             </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    },
     header: {
         height: 260,
         flexDirection: 'row',

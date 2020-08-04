@@ -5,7 +5,7 @@ import axios from 'axios';
 const AlBUM_URL = '/album/list';
 
 // 节目
-interface IProgram {
+export interface IProgram {
     id: string;
     title: string;
     playVolume: number;
