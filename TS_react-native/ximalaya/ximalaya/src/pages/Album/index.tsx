@@ -8,7 +8,7 @@ import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '@/navigator/index';
 import coverRight from '@/assets/cover-right.png';
 import Tab from './Tab';
-import { PanGestureHandler, PanGestureHandlerStateChangeEvent, State } from 'react-native-gesture-handler';
+import { PanGestureHandler, PanGestureHandlerStateChangeEvent, State, TapGestureHandler, NativeViewGestureHandler } from 'react-native-gesture-handler';
 import { viewportHeight } from '@/utils/index';
 
 const mapStateToProps = ({ album }: RootState) => {
@@ -31,6 +31,9 @@ const HEADER_HEIGHT = 260;
 const USE_NATIVE_DRIVER = true;
 
 class Album extends React.Component<IProps> {
+    panRef = React.createRef<PanGestureHandler>();
+    tapRef = React.createRef<TapGestureHandler>();
+    nativeRef = React.createRef<NativeViewGestureHandler>();
     RANGE = [-(HEADER_HEIGHT - this.props.headerHeight), 0];
     translationY = new Animated.Value(0);
     translationYValue = 0;
@@ -98,28 +101,35 @@ class Album extends React.Component<IProps> {
     }
     render() {
         return (
-            <PanGestureHandler
-                onGestureEvent={this.onGestureEvent}
-                onHandlerStateChange={this.onHandlerStateChange}
-            >
-                <Animated.View style={[
-                        styles.container,
-                        {
-                            transform: [{ 
-                                translateY: this.translateY.interpolate({
-                                    inputRange: this.RANGE,
-                                    outputRange: this.RANGE,
-                                    extrapolate: 'clamp'
-                                }) 
-                            }]
-                        }
-                    ]}>
-                    {this.renderHeader()}
-                    <View style={{height: viewportHeight - this.props.headerHeight}}>
-                        <Tab />
-                    </View>
-                </Animated.View>
-            </PanGestureHandler>
+            <TapGestureHandler ref={this.tapRef}>
+                {/* 小贴士：手势响应组件本身没有实体，不能直接嵌套 */}
+                <View style={styles.container}>
+                    <PanGestureHandler
+                        ref={this.panRef}
+                        simultaneousHandlers={[this.tapRef, this.nativeRef]}
+                        onGestureEvent={this.onGestureEvent}
+                        onHandlerStateChange={this.onHandlerStateChange}
+                    >
+                        <Animated.View style={[
+                                styles.container,
+                                {
+                                    transform: [{ 
+                                        translateY: this.translateY.interpolate({
+                                            inputRange: this.RANGE,
+                                            outputRange: this.RANGE,
+                                            extrapolate: 'clamp'
+                                        }) 
+                                    }]
+                                }
+                            ]}>
+                            {this.renderHeader()}
+                            <View style={{height: viewportHeight - this.props.headerHeight}}>
+                                <Tab panRef={this.panRef} tapRef={this.tapRef} nativeRef={this.nativeRef} />
+                            </View>
+                        </Animated.View>
+                    </PanGestureHandler>
+                </View>
+            </TapGestureHandler>
         );
     }
 }
