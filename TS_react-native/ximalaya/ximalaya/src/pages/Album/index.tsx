@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, Animated } from 'react-native';
 import { BlurView } from '@react-native-community/blur';
 import { useHeaderHeight } from '@react-navigation/stack';
 import { RootState } from '@/models/index';
@@ -26,6 +26,7 @@ interface IProps extends ModelState {
 }
 
 class Album extends React.Component<IProps> {
+    translateY = new Animated.Value(0); // 动画效果
     componentDidMount() {
         const { dispatch, route } = this.props;
         const { id } = route.params.item;
@@ -35,6 +36,11 @@ class Album extends React.Component<IProps> {
                 id,
             }
         });
+        Animated.spring(this.translateY, {
+            toValue: -170,
+            tension: 100,
+            friction: 10
+        }).start()
     }
     renderHeader = () => {
         const { headerHeight, summary, author, route } = this.props;
@@ -63,10 +69,23 @@ class Album extends React.Component<IProps> {
     }
     render() {
         return (
-            <View style={styles.container}>
+            <Animated.View style={[
+                styles.container, {
+                    padding: 10,
+                    opacity: this.translateY.interpolate({
+                        inputRange: [-170, 0],
+                        outputRange: [1, 0]
+                    }),
+                    backgroundColor: this.translateY.interpolate({ 
+                        inputRange: [-170, 0],
+                        outputRange: ['red', '#fff']
+                    }), 
+                    transform: [{ translateY: this.translateY }] 
+                }
+            ]}>
                 {this.renderHeader()}
                 <Tab />
-            </View>
+            </Animated.View>
         );
     }
 }
@@ -137,7 +156,7 @@ const styles = StyleSheet.create({
 
 function AlbumWrapper(props: IProps) {
     const headerHeight = useHeaderHeight();
-    return <Album {...props} headerHeight={headerHeight}  />;
+    return <Album {...props} headerHeight={headerHeight} />;
 }
 
 export default connector(AlbumWrapper);
