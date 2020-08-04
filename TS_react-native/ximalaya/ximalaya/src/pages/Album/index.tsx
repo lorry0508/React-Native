@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
 
 function AlbumWrapper(props: IProps) {
     const headerHeight = useHeaderHeight();
-    return <Album headerHeight={headerHeight} {...props} />;
+    return <Album {...props} headerHeight={headerHeight}  />;
 }
 
 export default connector(AlbumWrapper);
