@@ -9,6 +9,7 @@ import { RootStackParamList } from '@/navigator/index';
 import coverRight from '@/assets/cover-right.png';
 import Tab from './Tab';
 import { PanGestureHandler, PanGestureHandlerStateChangeEvent, State } from 'react-native-gesture-handler';
+import { viewportHeight } from '@/utils/index';
 
 const mapStateToProps = ({ album }: RootState) => {
     return {
@@ -55,6 +56,20 @@ class Album extends React.Component<IProps> {
             this.translationYOffset.setValue(translationY);
             this.translationYOffset.flattenOffset();
             this.translationY.setValue(0);
+            this.translationYValue += translationY;
+            if(this.translationYValue < this.RANGE[0]) {
+                this.translationYValue = this.RANGE[0];
+                Animated.timing(this.translationYOffset, {
+                    toValue: this.RANGE[0],
+                    useNativeDriver: USE_NATIVE_DRIVER
+                }).start();
+            } else if(this.translationYValue > this.RANGE[1]) {
+                this.translationYValue = this.RANGE[1];
+                Animated.timing(this.translationYOffset, {
+                    toValue: this.RANGE[1],
+                    useNativeDriver: USE_NATIVE_DRIVER
+                }).start();
+            }
         }
     }
     renderHeader = () => {
@@ -88,13 +103,21 @@ class Album extends React.Component<IProps> {
                 onHandlerStateChange={this.onHandlerStateChange}
             >
                 <Animated.View style={[
-                    styles.container,
-                    {
-                        transform: [{ translateY: this.translateY.interpolate({inputRange: this.RANGE, outputRange: this.RANGE, extrapolate: 'clamp'}) }]
-                    }
-                ]}>
+                        styles.container,
+                        {
+                            transform: [{ 
+                                translateY: this.translateY.interpolate({
+                                    inputRange: this.RANGE,
+                                    outputRange: this.RANGE,
+                                    extrapolate: 'clamp'
+                                }) 
+                            }]
+                        }
+                    ]}>
                     {this.renderHeader()}
-                    <Tab />
+                    <View style={{height: viewportHeight - this.props.headerHeight}}>
+                        <Tab />
+                    </View>
                 </Animated.View>
             </PanGestureHandler>
         );
