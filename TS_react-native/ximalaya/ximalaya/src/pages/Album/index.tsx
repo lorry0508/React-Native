@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, Animated } from 'react-native';
+import { View, Text, StyleSheet, Image, Animated, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
 import { BlurView } from '@react-native-community/blur';
 import { useHeaderHeight } from '@react-navigation/stack';
 import { RootState } from '@/models/index';
 import { connect, ConnectedProps } from 'react-redux';
 import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '@/navigator/index';
+import { RootStackParamList, RootStackNavigation } from '@/navigator/index';
 import coverRight from '@/assets/cover-right.png';
 import Tab from './Tab';
 import { PanGestureHandler, PanGestureHandlerStateChangeEvent, State, TapGestureHandler, NativeViewGestureHandler } from 'react-native-gesture-handler';
@@ -24,7 +24,8 @@ type ModelState = ConnectedProps<typeof connector>;
 
 interface IProps extends ModelState {
     headerHeight: number;
-    route: RouteProp<RootStackParamList, 'Album'>
+    route: RouteProp<RootStackParamList, 'Album'>;
+    navigation: RootStackNavigation;
 }
 
 const HEADER_HEIGHT = 260;
@@ -36,11 +37,14 @@ class Album extends React.Component<IProps> {
     nativeRef = React.createRef<NativeViewGestureHandler>();
     RANGE = [-(HEADER_HEIGHT - this.props.headerHeight), 0];
     translationY = new Animated.Value(0);
+    lastScrollY = new Animated.Value(0);
+    lastScrollYValue = 0;
+    reverseLastScrollY = Animated.multiply(new Animated.Value(-1), this.lastScrollY);
     translationYValue = 0;
     translationYOffset = new Animated.Value(0);
-    translateY = Animated.add(this.translationY, this.translationYOffset); // 动画效果, 不能使用简单的加减乘除
+    translateY = Animated.add(Animated.add(this.translationY, this.reverseLastScrollY), this.translationYOffset); // 动画效果, 不能使用简单的加减乘除
     componentDidMount() {
-        const { dispatch, route } = this.props;
+        const { dispatch, route, navigation} = this.props;
         const { id } = route.params.item;
         dispatch({
             type: 'album/fetchAlbum',
@@ -48,30 +52,52 @@ class Album extends React.Component<IProps> {
                 id,
             }
         });
+        navigation.setParams({
+            opacity: this.translateY.interpolate({
+                inputRange: this.RANGE,
+                outputRange: [1, 0]
+            })
+        })
     }
+    onScrollDrag = Animated.event([{nativeEvent: {contentOffset: {y: this.lastScrollY}}}], {
+        useNativeDriver: USE_NATIVE_DRIVER,
+        listener: ({nativeEvent}: NativeSyntheticEvent<NativeScrollEvent>) => {
+            this.lastScrollYValue = nativeEvent.contentOffset.y;
+        }
+    });
     onGestureEvent = Animated.event([{ nativeEvent: { translationY: this.translationY } }], {
         useNativeDriver: USE_NATIVE_DRIVER
     });
     onHandlerStateChange = ({ nativeEvent }: PanGestureHandlerStateChangeEvent) => {
         if (nativeEvent.oldState === State.ACTIVE) {
             let { translationY } = nativeEvent;
+            translationY -= this.lastScrollYValue;
             this.translationYOffset.extractOffset();
             this.translationYOffset.setValue(translationY);
             this.translationYOffset.flattenOffset();
             this.translationY.setValue(0);
             this.translationYValue += translationY;
+            let maxDeltaY = -this.RANGE[0] - this.translationYValue;
             if(this.translationYValue < this.RANGE[0]) {
                 this.translationYValue = this.RANGE[0];
                 Animated.timing(this.translationYOffset, {
                     toValue: this.RANGE[0],
                     useNativeDriver: USE_NATIVE_DRIVER
                 }).start();
+                maxDeltaY = this.RANGE[1];
             } else if(this.translationYValue > this.RANGE[1]) {
                 this.translationYValue = this.RANGE[1];
                 Animated.timing(this.translationYOffset, {
                     toValue: this.RANGE[1],
                     useNativeDriver: USE_NATIVE_DRIVER
                 }).start();
+                maxDeltaY = -this.RANGE[0];
+            }
+            if(this.tapRef.current) {
+                const tap: any = this.tapRef.current;
+                tap.setNativeProps({
+                    maxDeltaY
+                })
             }
         }
     }
@@ -101,7 +127,7 @@ class Album extends React.Component<IProps> {
     }
     render() {
         return (
-            <TapGestureHandler ref={this.tapRef}>
+            <TapGestureHandler ref={this.tapRef} maxDeltaY={-this.RANGE[0]}>
                 {/* 小贴士：手势响应组件本身没有实体，不能直接嵌套 */}
                 <View style={styles.container}>
                     <PanGestureHandler
@@ -124,7 +150,7 @@ class Album extends React.Component<IProps> {
                             ]}>
                             {this.renderHeader()}
                             <View style={{height: viewportHeight - this.props.headerHeight}}>
-                                <Tab panRef={this.panRef} tapRef={this.tapRef} nativeRef={this.nativeRef} />
+                                <Tab panRef={this.panRef} tapRef={this.tapRef} nativeRef={this.nativeRef} onScrollDrag={this.onScrollDrag} />
                             </View>
                         </Animated.View>
                     </PanGestureHandler>
