@@ -150,7 +150,13 @@ class Album extends React.Component<IProps> {
                             ]}>
                             {this.renderHeader()}
                             <View style={{height: viewportHeight - this.props.headerHeight}}>
-                                <Tab panRef={this.panRef} tapRef={this.tapRef} nativeRef={this.nativeRef} onScrollDrag={this.onScrollDrag} />
+                                <Tab 
+                                    panRef={this.panRef} 
+                                    tapRef={this.tapRef} 
+                                    nativeRef={this.nativeRef} 
+                                    onScrollDrag={this.onScrollDrag}
+                                    onItemPress={this.onItemPress}
+                                />
                             </View>
                         </Animated.View>
                     </PanGestureHandler>
