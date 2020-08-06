@@ -33,7 +33,7 @@ interface IState {
     refreshing: boolean;
 }
 
-class Home extends React.PureComponent<IProps, IState> {
+class Home extends React.Component<IProps, IState> {
     state = {
         refreshing: false
     }

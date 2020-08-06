@@ -114,7 +114,7 @@ export type ModalStackNavigation = StackNavigationProp<ModalStackParamList>;
 
 function ModalStackScreen() {
     return (
-        <ModalStack.Navigator mode='modal' headerMode='screen'>
+        <ModalStack.Navigator mode='modal'>
             <ModalStack.Screen name='Root' component={RootStackScreen} options={{headerShown: false}} />
             <ModalStack.Screen name='Detail' component={Detail} />
         </ModalStack.Navigator>

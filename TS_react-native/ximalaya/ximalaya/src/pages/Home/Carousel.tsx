@@ -25,7 +25,7 @@ const connector = connect(mapStateToProps);
 type MadelState = ConnectedProps<typeof connector>;
 interface IProps extends MadelState {};
 
-class Carousel extends React.PureComponent<IProps> {
+class Carousel extends React.Component<IProps> {
     renderItem = (
         { item }: { item: ICarousel },
         parallaxProps?: AdditionalParallaxProps, //视差

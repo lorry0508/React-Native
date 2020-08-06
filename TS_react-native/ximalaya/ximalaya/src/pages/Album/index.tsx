@@ -5,11 +5,12 @@ import { useHeaderHeight } from '@react-navigation/stack';
 import { RootState } from '@/models/index';
 import { connect, ConnectedProps } from 'react-redux';
 import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList, RootStackNavigation } from '@/navigator/index';
+import { RootStackParamList, ModalStackNavigation } from '@/navigator/index';
 import coverRight from '@/assets/cover-right.png';
 import Tab from './Tab';
 import { PanGestureHandler, PanGestureHandlerStateChangeEvent, State, TapGestureHandler, NativeViewGestureHandler } from 'react-native-gesture-handler';
 import { viewportHeight } from '@/utils/index';
+import { IProgram } from '@/models/album';
 
 const mapStateToProps = ({ album }: RootState) => {
     return {
@@ -25,7 +26,7 @@ type ModelState = ConnectedProps<typeof connector>;
 interface IProps extends ModelState {
     headerHeight: number;
     route: RouteProp<RootStackParamList, 'Album'>;
-    navigation: RootStackNavigation;
+    navigation: ModalStackNavigation;
 }
 
 const HEADER_HEIGHT = 260;
@@ -44,7 +45,7 @@ class Album extends React.Component<IProps> {
     translationYOffset = new Animated.Value(0);
     translateY = Animated.add(Animated.add(this.translationY, this.reverseLastScrollY), this.translationYOffset); // 动画效果, 不能使用简单的加减乘除
     componentDidMount() {
-        const { dispatch, route, navigation} = this.props;
+        const { dispatch, route, navigation } = this.props;
         const { id } = route.params.item;
         dispatch({
             type: 'album/fetchAlbum',
@@ -59,9 +60,15 @@ class Album extends React.Component<IProps> {
             })
         })
     }
-    onScrollDrag = Animated.event([{nativeEvent: {contentOffset: {y: this.lastScrollY}}}], {
+
+    onItemPress = (data: IProgram, index: number) => {
+        console.log(this.props, "album打印")
+        const { navigation } = this.props;
+        navigation.navigate('Detail');
+    }
+    onScrollDrag = Animated.event([{ nativeEvent: { contentOffset: { y: this.lastScrollY } } }], {
         useNativeDriver: USE_NATIVE_DRIVER,
-        listener: ({nativeEvent}: NativeSyntheticEvent<NativeScrollEvent>) => {
+        listener: ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
             this.lastScrollYValue = nativeEvent.contentOffset.y;
         }
     });
@@ -78,14 +85,14 @@ class Album extends React.Component<IProps> {
             this.translationY.setValue(0);
             this.translationYValue += translationY;
             let maxDeltaY = -this.RANGE[0] - this.translationYValue;
-            if(this.translationYValue < this.RANGE[0]) {
+            if (this.translationYValue < this.RANGE[0]) {
                 this.translationYValue = this.RANGE[0];
                 Animated.timing(this.translationYOffset, {
                     toValue: this.RANGE[0],
                     useNativeDriver: USE_NATIVE_DRIVER
                 }).start();
                 maxDeltaY = this.RANGE[1];
-            } else if(this.translationYValue > this.RANGE[1]) {
+            } else if (this.translationYValue > this.RANGE[1]) {
                 this.translationYValue = this.RANGE[1];
                 Animated.timing(this.translationYOffset, {
                     toValue: this.RANGE[1],
@@ -93,7 +100,7 @@ class Album extends React.Component<IProps> {
                 }).start();
                 maxDeltaY = -this.RANGE[0];
             }
-            if(this.tapRef.current) {
+            if (this.tapRef.current) {
                 const tap: any = this.tapRef.current;
                 tap.setNativeProps({
                     maxDeltaY
@@ -106,11 +113,11 @@ class Album extends React.Component<IProps> {
         const { title, image } = route.params.item;
         return (
             <View style={[styles.header, { paddingTop: headerHeight }]}>
-                <Image source={{ uri: image }} style={styles.background} />
+                <Image style={styles.background} source={{uri: image }} />
                 <BlurView blurType='light' blurAmount={10} style={StyleSheet.absoluteFillObject} />
                 <View style={styles.leftView}>
-                    <Image source={{ uri: image }} style={styles.thumbnail} />
-                    <Image source={coverRight} style={styles.coverRight} />
+                    <Image style={styles.thumbnail} source={{uri: image }} />
+                    <Image style={styles.coverRight} source={coverRight}  />
                 </View>
                 <View style={styles.rightView}>
                     <Text style={styles.title}>{title}</Text>
@@ -118,7 +125,7 @@ class Album extends React.Component<IProps> {
                         <Text numberOfLines={1} style={styles.summaryText}>{summary}</Text>
                     </View>
                     <View style={styles.author}>
-                        <Image source={{ uri: author.avatar }} style={styles.avatar} />
+                        <Image style={styles.avatar} source={{ uri: author.avatar }} />
                         <Text style={styles.name}>{author.name}</Text>
                     </View>
                 </View>
@@ -137,23 +144,23 @@ class Album extends React.Component<IProps> {
                         onHandlerStateChange={this.onHandlerStateChange}
                     >
                         <Animated.View style={[
-                                styles.container,
-                                {
-                                    transform: [{ 
-                                        translateY: this.translateY.interpolate({
-                                            inputRange: this.RANGE,
-                                            outputRange: this.RANGE,
-                                            extrapolate: 'clamp'
-                                        }) 
-                                    }]
-                                }
-                            ]}>
+                            styles.container,
+                            {
+                                transform: [{
+                                    translateY: this.translateY.interpolate({
+                                        inputRange: this.RANGE,
+                                        outputRange: this.RANGE,
+                                        extrapolate: 'clamp'
+                                    })
+                                }]
+                            }
+                        ]}>
                             {this.renderHeader()}
-                            <View style={{height: viewportHeight - this.props.headerHeight}}>
-                                <Tab 
-                                    panRef={this.panRef} 
-                                    tapRef={this.tapRef} 
-                                    nativeRef={this.nativeRef} 
+                            <View style={{ height: viewportHeight - this.props.headerHeight }}>
+                                <Tab
+                                    panRef={this.panRef}
+                                    tapRef={this.tapRef}
+                                    nativeRef={this.nativeRef}
                                     onScrollDrag={this.onScrollDrag}
                                     onItemPress={this.onItemPress}
                                 />

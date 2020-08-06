@@ -21,20 +21,21 @@ type IProps = ModelState & ITabProps;
 
 class List extends React.Component<IProps> {
     onPress = (data: IProgram, index: number) => {
+        console.log(this.props, "list打印")
         const { onItemPress } = this.props;
         onItemPress(data, index);
     }
+    keyExtractor = (item: IProgram) => item.id;
     renderItem = ({ item, index }: ListRenderItemInfo<IProgram>) => {
         return <Item data={item} index={index} onPress={this.onPress} />;
     }
-    keyExtractor = (item: IProgram) => item.id;
     render() {
         const { list, panRef, tapRef, nativeRef, onScrollDrag } = this.props;
         return (
             <NativeViewGestureHandler
+                simultaneousHandlers={panRef}
                 ref={nativeRef}
                 waitFor={tapRef}
-                simultaneousHandlers={panRef}
             >
                 <Animated.FlatList
                     style={styles.container}
@@ -42,8 +43,8 @@ class List extends React.Component<IProps> {
                     bounces={false}
                     renderItem={this.renderItem}
                     keyExtractor={this.keyExtractor}
-                    onScrollBeginDrag={onScrollDrag}
-                    onScrollEndDrag={onScrollDrag}
+                    // onScrollBeginDrag={onScrollDrag}
+                    // onScrollEndDrag={onScrollDrag}
                 />
             </NativeViewGestureHandler>
         );

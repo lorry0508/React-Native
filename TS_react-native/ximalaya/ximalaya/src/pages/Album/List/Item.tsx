@@ -13,6 +13,7 @@ interface IProps {
 class Item extends React.Component<IProps> {
     onPress = () => {
         const { onPress, data, index } = this.props;
+        console.log(this.props, "点击节目")
         if (typeof onPress === 'function') {
             onPress(data, index);
         }
