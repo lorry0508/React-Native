@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, Animated } from 'react-native';
 import { BlurView } from '@react-native-community/blur';
 import { useHeaderHeight } from '@react-navigation/stack';
 import { RootState } from '@/models/index';
@@ -8,6 +8,7 @@ import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '@/navigator/index';
 import coverRight from '@/assets/cover-right.png';
 import Tab from '@/pages/Album/Tab';
+import { transform } from 'lodash';
 
 const mapStateToProps = ({ album }: RootState) => {
     return {
@@ -28,6 +29,7 @@ interface IProps extends ModelState {
 const HEADER_HEIGHT = 260;
 
 class Album extends React.Component<IProps> {
+    translateY = new Animated.Value(0);
     componentDidMount() {
         const { dispatch, route } = this.props;
         const { id } = route.params.item;
@@ -37,6 +39,11 @@ class Album extends React.Component<IProps> {
                 id,
             }
         });
+        Animated.timing(this.translateY, {
+            toValue: -170,
+            duration: 3000,
+            useNativeDriver: true
+        }).start();
     }
     renderHeader = () => {
         const { headerHeight, summary, author, route } = this.props;
@@ -69,13 +76,16 @@ class Album extends React.Component<IProps> {
         );
     }
     render() {
-        const { headerHeight, summary, author, route } = this.props;
-        const { title, image } = route.params.item;
         return (
-            <View style={styles.container}>
+            <Animated.View
+                style={[
+                    styles.container, 
+                    { 
+                        transform: [{ translateY: this.translateY }] }
+                ]}>
                 {this.renderHeader()}
                 <Tab />
-            </View>
+            </Animated.View>
         );
     }
 }
