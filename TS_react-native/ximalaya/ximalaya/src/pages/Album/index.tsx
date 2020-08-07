@@ -9,6 +9,7 @@ import { RootStackParamList } from '@/navigator/index';
 import coverRight from '@/assets/cover-right.png';
 import Tab from '@/pages/Album/Tab';
 import { transform } from 'lodash';
+import { PanGestureHandler, PanGestureHandlerGestureEvent, PanGestureHandlerStateChangeEvent, State } from 'react-native-gesture-handler';
 
 const mapStateToProps = ({ album }: RootState) => {
     return {
@@ -27,9 +28,15 @@ interface IProps extends ModelState {
 }
 
 const HEADER_HEIGHT = 260;
+const USE_NATIVE_DRIVER = true;
 
 class Album extends React.Component<IProps> {
-    translateY = new Animated.Value(0);
+    RANGE = [-(HEADER_HEIGHT - this.props.headerHeight), 0];
+    translationY = new Animated.Value(0);
+    // translationYValue = 
+    translationYOffset = new Animated.Value(0);
+    translateY = Animated.add(this.translationY, this.translationYOffset)
+    
     componentDidMount() {
         const { dispatch, route } = this.props;
         const { id } = route.params.item;
@@ -39,12 +46,22 @@ class Album extends React.Component<IProps> {
                 id,
             }
         });
-        Animated.timing(this.translateY, {
-            toValue: -170,
-            duration: 3000,
-            useNativeDriver: true
-        }).start();
     }
+    onGestureEvent = Animated.event(
+        [{ nativeEvent: { translationY: this.translationY } }],
+        {
+            useNativeDriver: USE_NATIVE_DRIVER,
+        },
+    );
+    onHandlerStateChange = ({ nativeEvent }: PanGestureHandlerStateChangeEvent) => {
+        if (nativeEvent.oldState === State.ACTIVE) {
+            let { translationY } = nativeEvent;
+            this.translationYOffset.extractOffset();
+            this.translationYOffset.setValue(translationY);
+            this.translationYOffset.flattenOffset();
+            this.translationY.setValue(0);
+        }
+    };
     renderHeader = () => {
         const { headerHeight, summary, author, route } = this.props;
         const { title, image } = route.params.item;
@@ -77,15 +94,25 @@ class Album extends React.Component<IProps> {
     }
     render() {
         return (
-            <Animated.View
-                style={[
-                    styles.container, 
-                    { 
-                        transform: [{ translateY: this.translateY }] }
-                ]}>
-                {this.renderHeader()}
-                <Tab />
-            </Animated.View>
+            <PanGestureHandler
+                onGestureEvent={this.onGestureEvent}
+                onHandlerStateChange={this.onHandlerStateChange}
+            >
+                <Animated.View
+                    style={[
+                        styles.container,
+                        {
+                            transform: [{ translateY: this.translateY.interpolate({
+                                inputRange: this.RANGE, 
+                                outputRange: this.RANGE, 
+                                extrapolate: 'clamp'
+                            })}]
+                        }
+                    ]}>
+                    {this.renderHeader()}
+                    <Tab />
+                </Animated.View>
+            </PanGestureHandler>
         );
     }
 }
