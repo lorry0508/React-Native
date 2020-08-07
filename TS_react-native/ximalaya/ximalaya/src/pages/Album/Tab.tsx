@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Platform } from 'react-native';
-import { TabView } from 'react-native-tab-view';
+import { TabView, TabBar, SceneRendererProps } from 'react-native-tab-view';
 import Introduction from './Introduction';
 import List from './List';
 
@@ -9,7 +9,14 @@ interface IRoute {
     title: string;
 }
 
-class Tab extends React.Component {
+interface IState {
+    routes: IRoute[];
+    index: number;
+}
+
+interface IProps {}
+
+class Tab extends React.Component<IProps, IState> {
     state = {
         routes: [
             { key: 'introduction', title: '简介' },
@@ -22,20 +29,31 @@ class Tab extends React.Component {
             index: index
         })
     }
-    renderScene = ({route}: {route: IRoute}) => {
-        switch(route.key) {
-            case 'introduction': 
+    renderScene = ({ route }: { route: IRoute }) => {
+        switch (route.key) {
+            case 'introduction':
                 return <Introduction />;
-            case 'albums': 
+            case 'albums':
                 return <List />;
         }
+    }
+    renderTabBar = (props: SceneRendererProps & {navigationState: IState}) => {
+        return <TabBar 
+                    {...props} 
+                    scrollEnabled
+                    tabStyle={styles.tabStyle}
+                    labelStyle={styles.label}
+                    style={styles.tabbar}
+                    indicatorStyle={styles.indicator}
+                />
     }
     render() {
         return (
             <TabView
                 navigationState={this.state}
-                onIndexChange = { this.onIndexChange }
-                renderScene = { this.renderScene }
+                onIndexChange={this.onIndexChange}
+                renderScene={this.renderScene}
+                renderTabBar={this.renderTabBar}
             />
         );
     }
