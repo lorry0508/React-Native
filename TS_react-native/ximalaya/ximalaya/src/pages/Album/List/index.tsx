@@ -1,60 +1,38 @@
 import React from 'react';
-import { ListRenderItemInfo, StyleSheet, Animated } from 'react-native';
+import { Text, FlatList, ListRenderItemInfo } from 'react-native';
 import { RootState } from '@/models/index';
 import { connect, ConnectedProps } from 'react-redux';
 import { IProgram } from '@/models/album';
-import Item from './Item';
-import { NativeViewGestureHandler } from 'react-native-gesture-handler';
-import { ITabProps } from '../Tab';
 
-const mapStateToprops = ({ album }: RootState) => {
+const mapStateToProps = ({album}: RootState) => {
     return {
-        list: album.list,
+        list: album.list
     };
 };
 
-const connector = connect(mapStateToprops);
+const connector = connect(mapStateToProps);
 
-type ModelState = ConnectedProps<typeof connector>;
+type ModalState = ConnectedProps<typeof connector>;
 
-type IProps = ModelState & ITabProps;
+interface IProps extends ModalState {};
 
 class List extends React.Component<IProps> {
-    onPress = (data: IProgram, index: number) => {
-        console.log(this.props, "list打印")
-        const { onItemPress } = this.props;
-        onItemPress(data, index);
-    }
     keyExtractor = (item: IProgram) => item.id;
-    renderItem = ({ item, index }: ListRenderItemInfo<IProgram>) => {
-        return <Item data={item} index={index} onPress={this.onPress} />;
+    renderItem = ({item, index}: ListRenderItemInfo<IProgram>) => {
+        return (
+            <Text>{item.title}</Text>
+        );
     }
     render() {
-        const { list, panRef, tapRef, nativeRef, onScrollDrag } = this.props;
+        const { list } = this.props;
         return (
-            <NativeViewGestureHandler
-                simultaneousHandlers={panRef}
-                ref={nativeRef}
-                waitFor={tapRef}
-            >
-                <Animated.FlatList
-                    style={styles.container}
-                    data={list}
-                    bounces={false}
-                    renderItem={this.renderItem}
-                    keyExtractor={this.keyExtractor}
-                    // onScrollBeginDrag={onScrollDrag}
-                    // onScrollEndDrag={onScrollDrag}
-                />
-            </NativeViewGestureHandler>
+            <FlatList
+                data={list}
+                renderItem={this.renderItem}
+                keyExtractor={this.keyExtractor}
+            />
         );
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#fff'
-    }
-});
 
 export default connector(List);

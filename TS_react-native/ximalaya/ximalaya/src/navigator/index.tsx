@@ -6,7 +6,8 @@ import BottomTabs from './BottomTabs';
 import Category from '@/pages/Category';
 import Album from '@/pages/Album';
 import Detail from '@/pages/Detail';
-import { Platform, StyleSheet, StatusBar, Animated } from 'react-native';
+import { Platform, StyleSheet, StatusBar } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 export type RootStackParamList = {
     BottomTabs: {
@@ -18,8 +19,7 @@ export type RootStackParamList = {
             id: string;
             title: string;
             image: string;
-        },
-        opacity?: Animated.Value;
+        }
     };
 }
 
@@ -38,94 +38,70 @@ function getAlbumOptions({ route }: { route: RouteProp<RootStackParamList, 'Albu
         headerTitle: route.params.item.title,
         headerTransparent: true,
         headerTitleStyle: {
-            opacity: route.params.opacity
+            opacity: 0
         },
         headerBackground: () => {
             return (
-                <Animated.View style={[styles.headerBackground, { opacity: route.params.opacity }]} />
+                <Animated.View style={styles.headerBackground} />
             );
         }
     };
-}
-
-function RootStackScreen() {
-    return (
-        <Stack.Navigator
-            headerMode="float"
-            screenOptions={{
-                headerTitleAlign: 'center',
-                headerStyleInterpolator: HeaderStyleInterpolators.forUIKit, // 标题动画效果
-                cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS, // 内容动画效果
-                gestureEnabled: true, // 默认手势是关闭的，设置为开启
-                gestureDirection: 'horizontal', // 默认手势方向为垂直方向，改为竖直方向
-                ...Platform.select({
-                    android: {
-                        headerStatusBarHeight: StatusBar.currentHeight,
-                    }
-                }),
-                headerBackTitleVisible: false,
-                headerTintColor: '#333',
-                headerStyle: { // 标题栏样式
-                    // backgroundColor: 'red',
-                    ...Platform.select({ // 平台的选择
-                        android: {
-                            elevation: 0,
-                            borderBottomWidth: StyleSheet.hairlineWidth,
-                        },
-                        // ios: {
-
-                        // }
-                    })
-                }
-            }}
-        >
-            {/* screenOptions 和 options 效果一样, 二选一使用就行， options层级更高 */}
-            <Stack.Screen
-                name="BottomTabs"
-                component={BottomTabs}
-                options={{
-                    headerTitle: '首页'
-                }}
-            />
-            <Stack.Screen
-                name="Category"
-                component={Category}
-                options={{
-                    headerTitle: '分类'
-                }}
-            />
-            <Stack.Screen
-                name="Album"
-                component={Album}
-                options={getAlbumOptions}
-            />
-        </Stack.Navigator>
-    );
-}
-
-export type ModalStackParamList = {
-    Root: undefined;
-    Detail: undefined;
-}
-
-const ModalStack = createStackNavigator<ModalStackParamList>();
-
-export type ModalStackNavigation = StackNavigationProp<ModalStackParamList>;
-
-function ModalStackScreen() {
-    return (
-        <ModalStack.Navigator mode='modal'>
-            <ModalStack.Screen name='Root' component={RootStackScreen} options={{headerShown: false}} />
-            <ModalStack.Screen name='Detail' component={Detail} />
-        </ModalStack.Navigator>
-    );
 }
 
 class Navigator extends React.Component {
     render() {
         return (
             <NavigationContainer>
-                <ModalStackScreen />
+                <Stack.Navigator
+                    headerMode="float"
+                    screenOptions={{
+                        headerTitleAlign: 'center',
+                        headerStyleInterpolator: HeaderStyleInterpolators.forUIKit, // 标题动画效果
+                        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS, // 内容动画效果
+                        gestureEnabled: true, // 默认手势是关闭的，设置为开启
+                        gestureDirection: 'horizontal', // 默认手势方向为垂直方向，改为竖直方向
+                        ...Platform.select({
+                            android: {
+                                headerStatusBarHeight: StatusBar.currentHeight,
+                            }
+                        }),
+                        headerBackTitleVisible: false,
+                        headerTintColor: '#333',
+                        headerStyle: { // 标题栏样式
+                            // backgroundColor: 'red',
+                            ...Platform.select({ // 平台的选择
+                                android: {
+                                    elevation: 0,
+                                    borderBottomWidth: StyleSheet.hairlineWidth,
+                                },
+                                // ios: {
+
+                                // }
+                            })
+                        }
+                    }}
+                >
+                    {/* screenOptions 和 options 效果一样, 二选一使用就行， options层级更高 */}
+                    <Stack.Screen
+                        name="BottomTabs"
+                        component={BottomTabs}
+                        options={{
+                            headerTitle: '首页'
+                        }}
+                    />
+                    <Stack.Screen
+                        name="Category"
+                        component={Category}
+                        options={{
+                            headerTitle: '分类'
+                        }}
+                    />
+                    <Stack.Screen
+                        name="Album"
+                        component={Album}
+                        options={getAlbumOptions}
+                    />
+                </Stack.Navigator>
             </NavigationContainer>
         );
     }

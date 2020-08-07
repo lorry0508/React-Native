@@ -1,78 +1,41 @@
 import React from 'react';
-import { TabView, TabBar, SceneRendererProps } from 'react-native-tab-view';
+import { View, Text, StyleSheet, Platform } from 'react-native';
+import { TabView } from 'react-native-tab-view';
 import Introduction from './Introduction';
 import List from './List';
-import { StyleSheet, Platform, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
-import { PanGestureHandler, TapGestureHandler, NativeViewGestureHandler } from 'react-native-gesture-handler';
-import { IProgram } from '@/models/album';
 
 interface IRoute {
     key: string;
     title: string;
 }
 
-interface IState {
-    routes: IRoute[];
-    index: number;
-}
-
-export interface ITabProps {
-    panRef: React.RefObject<PanGestureHandler>;
-    tapRef: React.RefObject<TapGestureHandler>;
-    nativeRef: React.RefObject<NativeViewGestureHandler>;
-    onScrollDrag: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
-    onItemPress: (data: IProgram, index: number) => void;
-}
-
-class Tab extends React.Component<ITabProps, IState> {
+class Tab extends React.Component {
     state = {
         routes: [
             { key: 'introduction', title: '简介' },
-            { key: 'album', title: '节目' }
+            { key: 'albums', title: '节目' }
         ],
         index: 1
     }
     onIndexChange = (index: number) => {
         this.setState({
-            index
+            index: index
         })
-    };
-    renderScene = ({ route }: { route: IRoute }) => {
-        const { panRef, tapRef, nativeRef, onScrollDrag, onItemPress } = this.props;
-        switch (route.key) {
-            case 'introduction':
+    }
+    renderScene = ({route}: {route: IRoute}) => {
+        switch(route.key) {
+            case 'introduction': 
                 return <Introduction />;
-            case 'album':
-                return (
-                    <List 
-                        panRef={panRef} 
-                        tapRef={tapRef} 
-                        nativeRef={nativeRef} 
-                        onScrollDrag={onScrollDrag} 
-                        onItemPress={onItemPress} 
-                    />
-                );    
+            case 'albums': 
+                return <List />;
         }
-    };
-    renderTabBar = (props: SceneRendererProps & { navigationState: IState }) => {
-        return (
-            <TabBar
-                {...props}
-                scrollEnabled
-                tabStyle={styles.tabStyle}
-                labelStyle={styles.labelStyle}
-                style={styles.tabbar}
-                indicatorStyle={styles.indicatorStyle}
-            />
-        );
     }
     render() {
         return (
             <TabView
                 navigationState={this.state}
-                onIndexChange={this.onIndexChange}
-                renderScene={this.renderScene}
-                renderTabBar={this.renderTabBar}
+                onIndexChange = { this.onIndexChange }
+                renderScene = { this.renderScene }
             />
         );
     }
@@ -80,10 +43,10 @@ class Tab extends React.Component<ITabProps, IState> {
 
 const styles = StyleSheet.create({
     tabStyle: {
-        width: 80
+        width: 80,
     },
-    labelStyle: {
-        color: '#000'
+    label: {
+        color: '#333',
     },
     tabbar: {
         backgroundColor: '#fff',
@@ -91,16 +54,16 @@ const styles = StyleSheet.create({
             android: {
                 elevation: 0,
                 borderBottomColor: '#e3e3e3',
-                borderBottomWidth: StyleSheet.hairlineWidth
-            }
-        })
+                borderBottomWidth: StyleSheet.hairlineWidth,
+            },
+        }),
     },
-    indicatorStyle: {
+    indicator: {
         backgroundColor: '#eb6d48',
         borderLeftWidth: 20,
         borderRightWidth: 20,
         borderColor: '#fff',
-    }
+    },
 });
 
 export default Tab;

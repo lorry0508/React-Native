@@ -1,33 +1,33 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { Text, StyleSheet } from 'react-native';
 import { RootState } from '@/models/index';
-import { connect, ConnectedProps } from 'react-redux';
+import { ConnectedProps, connect } from 'react-redux';
 
 const mapStateToProps = ({ album }: RootState) => {
     return {
         introduction: album.introduction
-    };
+    }
 };
 
 const connector = connect(mapStateToProps);
 
-type ModelState = ConnectedProps<typeof connector>;
+type ModalState = ConnectedProps<typeof connector>;
 
-class Introduction extends React.Component<ModelState> {
+class Introduction extends React.Component<ModalState> {
     render() {
         const { introduction } = this.props;
         return (
-            <View style={styles.container}>
-                <Text>{introduction}</Text>
-            </View>
+            <Text style={styles.container}>
+                {introduction}
+            </Text>
         );
     }
 }
 
 const styles = StyleSheet.create({
     container: {
-        padding: 10
-    }
+        padding: 10,
+    },
 });
 
 export default connector(Introduction);
