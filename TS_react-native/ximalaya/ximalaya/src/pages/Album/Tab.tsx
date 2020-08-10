@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Platform } from 'react-native';
 import { TabView, TabBar, SceneRendererProps } from 'react-native-tab-view';
 import Introduction from './Introduction';
 import List from './List';
+import { PanGestureHandler } from 'react-native-gesture-handler';
 
 interface IRoute {
     key: string;
@@ -14,9 +15,11 @@ interface IState {
     index: number;
 }
 
-interface IProps {}
+export interface ITabProps {
+    panRef: React.RefObject<PanGestureHandler>
+}
 
-class Tab extends React.Component<IProps, IState> {
+class Tab extends React.Component<ITabProps, IState> {
     state = {
         routes: [
             { key: 'introduction', title: '简介' },
@@ -30,22 +33,23 @@ class Tab extends React.Component<IProps, IState> {
         })
     }
     renderScene = ({ route }: { route: IRoute }) => {
+        const { panRef } = this.props;
         switch (route.key) {
             case 'introduction':
                 return <Introduction />;
             case 'albums':
-                return <List />;
+                return <List panRef={panRef} />;
         }
     }
-    renderTabBar = (props: SceneRendererProps & {navigationState: IState}) => {
-        return <TabBar 
-                    {...props} 
-                    scrollEnabled
-                    tabStyle={styles.tabStyle}
-                    labelStyle={styles.label}
-                    style={styles.tabbar}
-                    indicatorStyle={styles.indicator}
-                />
+    renderTabBar = (props: SceneRendererProps & { navigationState: IState }) => {
+        return <TabBar
+            {...props}
+            scrollEnabled
+            tabStyle={styles.tabStyle}
+            labelStyle={styles.label}
+            style={styles.tabbar}
+            indicatorStyle={styles.indicator}
+        />
     }
     render() {
         return (

@@ -32,6 +32,7 @@ const HEADER_HEIGHT = 260;
 const USE_NATIVE_DRIVER = true;
 
 class Album extends React.Component<IProps> {
+    panRef = React.createRef<PanGestureHandler>();
     RANGE = [-(HEADER_HEIGHT - this.props.headerHeight), 0];
     translationY = new Animated.Value(0);
     translationYValue = 0;
@@ -110,6 +111,7 @@ class Album extends React.Component<IProps> {
     render() {
         return (
             <PanGestureHandler
+                ref={this.panRef}
                 onGestureEvent={this.onGestureEvent}
                 onHandlerStateChange={this.onHandlerStateChange}
             >
@@ -128,7 +130,7 @@ class Album extends React.Component<IProps> {
                     ]}>
                     {this.renderHeader()}
                     <View style={{height: viewportHeight - this.props.headerHeight}}>
-                        <Tab />
+                        <Tab panRef={this.panRef} />
                     </View>
                 </Animated.View>
             </PanGestureHandler>
