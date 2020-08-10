@@ -6,8 +6,7 @@ import BottomTabs from './BottomTabs';
 import Category from '@/pages/Category';
 import Album from '@/pages/Album';
 import Detail from '@/pages/Detail';
-import { Platform, StyleSheet, StatusBar } from 'react-native';
-import Animated from 'react-native-reanimated';
+import { Platform, StyleSheet, StatusBar, Animated } from 'react-native';
 
 export type RootStackParamList = {
     BottomTabs: {
@@ -19,7 +18,8 @@ export type RootStackParamList = {
             id: string;
             title: string;
             image: string;
-        }
+        },
+        opacity?: Animated.Value;
     };
 }
 
@@ -38,11 +38,11 @@ function getAlbumOptions({ route }: { route: RouteProp<RootStackParamList, 'Albu
         headerTitle: route.params.item.title,
         headerTransparent: true,
         headerTitleStyle: {
-            opacity: 0
+            opacity: route.params.opacity
         },
         headerBackground: () => {
             return (
-                <Animated.View style={styles.headerBackground} />
+                <Animated.View style={[styles.headerBackground, { opacity: route.params.opacity }]} />
             );
         }
     };

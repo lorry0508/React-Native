@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, FlatList, ListRenderItemInfo, StyleSheet } from 'react-native';
+import { ListRenderItemInfo, StyleSheet, Animated } from 'react-native';
 import { RootState } from '@/models/index';
 import { connect, ConnectedProps } from 'react-redux';
 import { IProgram } from '@/models/album';
@@ -30,14 +30,21 @@ class List extends React.Component<IProps> {
         );
     }
     render() {
-        const { list, panRef } = this.props;
+        const { list, panRef, tapRef, nativeRef,  onScrollDrag} = this.props;
         return (
-            <NativeViewGestureHandler waitFor={panRef}>
-                <FlatList
+            <NativeViewGestureHandler
+                simultaneousHandlers={panRef}
+                ref={nativeRef}
+                waitFor={tapRef}
+            >
+                <Animated.FlatList
                     style={styles.container}
                     data={list}
+                    bounces={false}
                     renderItem={this.renderItem}
                     keyExtractor={this.keyExtractor}
+                    onScrollBeginDrag={onScrollDrag}
+                    onScrollEndDrag={onScrollDrag}
                 />
             </NativeViewGestureHandler>
         );
