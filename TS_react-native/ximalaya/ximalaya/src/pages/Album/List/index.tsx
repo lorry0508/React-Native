@@ -20,8 +20,9 @@ type ModalState = ConnectedProps<typeof connector>;
 type IProps = ModalState & ITabProps;
 
 class List extends React.Component<IProps> {
-    onPress = (data: IProgram) => {
-        console.log(data, "节目单项打印")
+    onPress = (data: IProgram, index: number) => {
+        const { onItemPress } = this.props;
+        onItemPress(data, index);
     }
     keyExtractor = (item: IProgram) => item.id;
     renderItem = ({ item, index }: ListRenderItemInfo<IProgram>) => {
@@ -30,7 +31,7 @@ class List extends React.Component<IProps> {
         );
     }
     render() {
-        const { list, panRef, tapRef, nativeRef,  onScrollDrag} = this.props;
+        const { list, panRef, tapRef, nativeRef, onScrollDrag } = this.props;
         return (
             <NativeViewGestureHandler
                 simultaneousHandlers={panRef}

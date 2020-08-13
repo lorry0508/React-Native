@@ -5,11 +5,12 @@ import { useHeaderHeight } from '@react-navigation/stack';
 import { RootState } from '@/models/index';
 import { connect, ConnectedProps } from 'react-redux';
 import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList, RootStackNavigation } from '@/navigator/index';
+import { RootStackParamList, RootStackNavigation, ModalStackNavigation } from '@/navigator/index';
 import coverRight from '@/assets/cover-right.png';
 import Tab from '@/pages/Album/Tab';
 import { PanGestureHandler, PanGestureHandlerStateChangeEvent, State, TapGestureHandler, NativeViewGestureHandler } from 'react-native-gesture-handler';
 import { viewportHeight } from '@/utils/index';
+import { IProgram } from '@/models/album';
 
 const mapStateToProps = ({ album }: RootState) => {
     return {
@@ -25,7 +26,7 @@ type ModelState = ConnectedProps<typeof connector>;
 interface IProps extends ModelState {
     headerHeight: number;
     route: RouteProp<RootStackParamList, 'Album'>;
-    navigation: RootStackNavigation;
+    navigation: ModalStackNavigation;
 }
 
 const HEADER_HEIGHT = 260;
@@ -67,11 +68,15 @@ class Album extends React.Component<IProps> {
             })
         })
     }
+    onItemPress = (data: IProgram, index: number) => {
+        const { navigation } = this.props;
+        navigation.navigate('Detail');
+    }
     onScrollDrag = Animated.event(
         [{ nativeEvent: { contentOffset: { y: this.lastScrollY } } }],
         {
             useNativeDriver: USE_NATIVE_DRIVER,
-            listener: ({nativeEvent}:  NativeSyntheticEvent<NativeScrollEvent>) => {
+            listener: ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
                 this.lastScrollYValue = nativeEvent.contentOffset.y;
             }
         },
@@ -149,38 +154,44 @@ class Album extends React.Component<IProps> {
     render() {
         return (
             /* 小贴士：手势响应组件不能直接相互嵌套 */
-            <TapGestureHandler
-                ref={this.tapRef}
-                maxDeltaY={-this.RANGE[0]}
-            >
-                <View style={styles.container}>
-                    <PanGestureHandler
-                        ref={this.panRef}
-                        simultaneousHandlers={[this.tapRef, this.nativeRef]}
-                        onGestureEvent={this.onGestureEvent}
-                        onHandlerStateChange={this.onHandlerStateChange}
-                    >
-                        <Animated.View
-                            style={[
-                                styles.container,
-                                {
-                                    transform: [{
-                                        translateY: this.translateY.interpolate({
-                                            inputRange: this.RANGE,
-                                            outputRange: this.RANGE,
-                                            extrapolate: 'clamp'
-                                        })
-                                    }]
-                                }
-                            ]}>
-                            {this.renderHeader()}
-                            <View style={{ height: viewportHeight - this.props.headerHeight }}>
-                                <Tab panRef={this.panRef} tapRef={this.tapRef} nativeRef={this.nativeRef} onScrollDrag={this.onScrollDrag} />
-                            </View>
-                        </Animated.View>
-                    </PanGestureHandler>
-                </View>
-            </TapGestureHandler>
+            // <TapGestureHandler
+            //     ref={this.tapRef}
+            //     maxDeltaY={-this.RANGE[0]}
+            // >
+            <View style={styles.container}>
+                <PanGestureHandler
+                    ref={this.panRef}
+                    simultaneousHandlers={[this.tapRef, this.nativeRef]}
+                    onGestureEvent={this.onGestureEvent}
+                    onHandlerStateChange={this.onHandlerStateChange}
+                >
+                    <Animated.View
+                        style={[
+                            styles.container,
+                            {
+                                transform: [{
+                                    translateY: this.translateY.interpolate({
+                                        inputRange: this.RANGE,
+                                        outputRange: this.RANGE,
+                                        extrapolate: 'clamp'
+                                    })
+                                }]
+                            }
+                        ]}>
+                        {this.renderHeader()}
+                        <View style={{ height: viewportHeight - this.props.headerHeight }}>
+                            <Tab
+                                panRef={this.panRef}
+                                tapRef={this.tapRef}
+                                nativeRef={this.nativeRef}
+                                onScrollDrag={this.onScrollDrag}
+                                onItemPress={this.onItemPress}
+                            />
+                        </View>
+                    </Animated.View>
+                </PanGestureHandler>
+            </View>
+            // </TapGestureHandler>
         );
     }
 }

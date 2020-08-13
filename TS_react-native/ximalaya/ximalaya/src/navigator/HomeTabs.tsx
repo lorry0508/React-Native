@@ -1,5 +1,6 @@
 import React from 'react';
 import { createMaterialTopTabNavigator, MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
+import ViewPagerAdapter from 'react-native-tab-view-viewpager-adapter';
 import Home from '@/pages/Home';
 import TopTabBarWrapper from '@/pages/views/TopTabBarWrapper';
 import { StyleSheet } from 'react-native';
@@ -54,6 +55,7 @@ class HomeTabs extends React.Component<IProps> {
             <Tab.Navigator
                 lazy // 对应标签下内容的懒加载, 等同于直接写一个lazy={true}
                 tabBar={this.renderTabBar} // 自定义顶部标签栏
+                pager={props => <ViewPagerAdapter {...props} />}
                 sceneContainerStyle={styles.sceneContainer}
                 tabBarOptions={{
                     scrollEnabled: true, // 顶部导航器菜单滑动设置
