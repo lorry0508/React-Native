@@ -1,7 +1,7 @@
-import { Effect, Model } from 'dva-core-ts';
+import { Effect, Model, EffectWithType } from 'dva-core-ts';
 import { Reducer } from 'redux';
 import axios from 'axios';
-import { play, init } from '@/config/sound';
+import { play, init, pause } from '@/config/sound';
 
 const SHOW_URL = '/show';
 
@@ -20,6 +20,8 @@ export interface PlayerModel extends Model {
     effects: {
         fetchShow: Effect;
         play: Effect;
+        pause: Effect;
+        watchCurrentTime: EffectWithType
     }
 }
 
@@ -28,6 +30,10 @@ const initialState: PlayerModelState = {
     soundUrl: '',
     playState: ''
 };
+
+function* getCurrentTime() {
+
+}
 
 const playerModel: PlayerModel = {
     namespace: 'player',
@@ -69,7 +75,23 @@ const playerModel: PlayerModel = {
                     playState: 'paused'
                 }
             })
-        }
+        },
+        *pause({ payload }, { call, put }) {
+            yield call(pause);
+            yield put({
+                type: 'setState',
+                payload: {
+                    playState: 'paused'
+                }
+            })
+        },
+        watchCurrentTime: [function* (sagaEffects) {
+            const { call, take, race } = sagaEffects;
+            while (true) {
+                yield take('play');
+                yield race([call(), take('pause')]);
+            }
+        }, { type: 'watcher' }]
     }
 };
 
