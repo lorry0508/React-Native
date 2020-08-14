@@ -15,7 +15,8 @@ import { IProgram } from '@/models/album';
 const mapStateToProps = ({ album }: RootState) => {
     return {
         summary: album.summary,
-        author: album.author
+        author: album.author,
+        list: album.list
     };
 };
 
@@ -69,7 +70,17 @@ class Album extends React.Component<IProps> {
         })
     }
     onItemPress = (data: IProgram, index: number) => {
-        const { navigation } = this.props;
+        const { navigation, dispatch, list } = this.props;
+        const previousItem = list[index - 1];
+        const nextItem = list[index + 1];
+        dispatch({
+            type: 'player/setState',
+            payload: {
+                previousId: previousItem ? previousItem.id : '',
+                nextId: nextItem ? nextItem.id : '',
+                sounds: list.map(item => ({id: item.id, title: item.title}))
+            }
+        })
         navigation.navigate('Detail', { id: data.id });
     }
     onScrollDrag = Animated.event(

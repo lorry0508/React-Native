@@ -50,9 +50,17 @@ class Detail extends React.Component<IProps> {
             <View style={styles.container}>
                 <Text>Detail</Text>
                 <PlayerSlider />
-                <Touchable onPress={this.toggle}>
-                    <Icon name={playState === 'playing' ? 'icon-paste' : 'icon-bofang'} size={40} color='#fff' />
-                </Touchable>
+                <View>
+                    <Touchable>
+                        <Icon name='icon-shangyishou' size={30} color='#fff' />
+                    </Touchable>
+                    <Touchable onPress={this.toggle}>
+                        <Icon name={playState === 'playing' ? 'icon-paste' : 'icon-bofang'} size={40} color='#fff' />
+                    </Touchable>
+                    <Touchable>
+                        <Icon name='icon-xiayishou' size={30} color='#fff' />
+                    </Touchable>
+                </View>
             </View>
         );
     }
