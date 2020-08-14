@@ -28,8 +28,6 @@ const play = () => {
                 } else {
                     reject();
                 }
-                // 释放资源
-                sound.release();
             });
         } else {
             reject();

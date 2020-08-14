@@ -1,7 +1,8 @@
-import { Effect, Model, EffectWithType } from 'dva-core-ts';
+import { Effect, Model, EffectWithType, EffectsCommandMap } from 'dva-core-ts';
 import { Reducer } from 'redux';
 import axios from 'axios';
-import { play, init, pause } from '@/config/sound';
+import { play, init, pause, getCurrentTime, getDuration } from '@/config/sound';
+import { call } from 'react-native-reanimated';
 
 const SHOW_URL = '/show';
 
@@ -9,6 +10,8 @@ export interface PlayerModelState {
     id: string;
     soundUrl: string;
     playState: string;
+    currentTime: number;
+    duration: number;
 }
 
 export interface PlayerModel extends Model {
@@ -28,11 +31,24 @@ export interface PlayerModel extends Model {
 const initialState: PlayerModelState = {
     id: '',
     soundUrl: '',
-    playState: ''
+    playState: '',
+    currentTime: 0,
+    duration: 0
 };
 
-function* getCurrentTime() {
+const delay = (timeout: number) => new Promise(resolve => setTimeout(resolve, timeout))
 
+function* currentTime({ call, put }: EffectsCommandMap) {
+    while (true) {
+        yield call(delay, 1000);
+        const currentTime = yield call(getCurrentTime);
+        yield put({
+            type: 'setState',
+            payload: {
+                currentTime
+            }
+        })
+    }
 }
 
 const playerModel: PlayerModel = {
@@ -49,14 +65,15 @@ const playerModel: PlayerModel = {
     effects: {
         *fetchShow({ payload }, { call, put }) {
             const { data } = yield call(axios.get, SHOW_URL, { params: { id: payload.id } });
+            yield call(init, data.soundUrl);
             yield put({
                 type: 'setState',
                 payload: {
                     id: data.id,
-                    soundUrl: data.soundUrl
+                    soundUrl: data.soundUrl,
+                    duration: getDuration()
                 }
             });
-            yield call(init, data.soundUrl);
             yield put({
                 type: 'play'
             });
@@ -89,7 +106,7 @@ const playerModel: PlayerModel = {
             const { call, take, race } = sagaEffects;
             while (true) {
                 yield take('play');
-                yield race([call(), take('pause')]);
+                yield race([call(currentTime, sagaEffects), take('pause')]);
             }
         }, { type: 'watcher' }]
     }
