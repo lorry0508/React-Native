@@ -106,7 +106,9 @@ function RootStackScreen() {
 
 export type ModalStackParamList = {
     Root: undefined;
-    Detail: undefined;
+    Detail: {
+        id: string
+    };
 };
 
 const ModalStack = createStackNavigator<ModalStackParamList>();
