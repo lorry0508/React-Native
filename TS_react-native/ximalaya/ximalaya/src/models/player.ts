@@ -9,6 +9,7 @@ const SHOW_URL = '/show';
 
 export interface PlayerModelState {
     id: string;
+    title: string;
     soundUrl: string;
     playState: string;
     currentTime: number;
@@ -36,6 +37,7 @@ export interface PlayerModel extends Model {
 
 const initialState: PlayerModelState = {
     id: '',
+    title: '',
     soundUrl: '',
     playState: '',
     currentTime: 0,
@@ -94,7 +96,11 @@ const playerModel: PlayerModel = {
                     playState: 'playing'
                 }
             });
-            yield call(play);
+            try {
+                yield call(play);
+            } catch(e) {
+                console.log('播放音频失败', e)
+            }  
             yield put({
                 type: 'setState',
                 payload: {

@@ -78,6 +78,7 @@ class Album extends React.Component<IProps> {
             payload: {
                 previousId: previousItem ? previousItem.id : '',
                 nextId: nextItem ? nextItem.id : '',
+                title: data.title,
                 sounds: list.map(item => ({id: item.id, title: item.title}))
             }
         })

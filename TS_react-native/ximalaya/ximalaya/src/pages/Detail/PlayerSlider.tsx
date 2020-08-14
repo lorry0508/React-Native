@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import Slider from 'react-native-slider-x';
 import { RootState } from '@/models/index';
 import { ConnectedProps, connect } from 'react-redux';
-import {formatTime} from '@/utils/index';
+import { formatTime } from '@/utils/index';
 
 const mapStateToProps = ({ player }: RootState) => {
     return {
