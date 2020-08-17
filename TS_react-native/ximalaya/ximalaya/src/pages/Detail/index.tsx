@@ -14,8 +14,7 @@ import Icon from '@/assets/iconfont';
 import PlayerSlider from './PlayerSlider';
 import { viewportWidth } from '@/utils/index';
 import LinearGradient from 'react-native-linear-gradient';
-import Barrage from '@/components/Barrage';
-import { random } from 'lodash';
+import Barrage, { Message } from '@/components/Barrage';
 
 const data: string[] = [
     '最灵繁的人也看不见自己的背脊',
@@ -58,11 +57,6 @@ type ModelState = ConnectedProps<typeof connector>;
 interface IProps extends ModelState {
     navigation: ModalStackNavigation;
     route: RouteProp<ModalStackParamList, 'Detail'>;
-}
-
-interface Message {
-    id: number;
-    title: string;
 }
 
 interface IState {
