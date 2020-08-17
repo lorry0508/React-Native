@@ -2,7 +2,8 @@ import React from 'react';
 import {
     View,
     Text,
-    StyleSheet
+    StyleSheet,
+    Animated
 } from 'react-native';
 import { ModalStackParamList, ModalStackNavigation } from '@/navigator/index';
 import { RouteProp } from '@react-navigation/native';
@@ -12,12 +13,14 @@ import Touchable from '@/components/Touchable';
 import Icon from '@/assets/iconfont';
 import PlayerSlider from './PlayerSlider';
 import { viewportWidth } from '@/utils/index';
+import LinearGradient from 'react-native-linear-gradient';
 
 const mapStateToProps = ({ player }: RootState) => {
     return {
         soundUrl: player.soundUrl,
         playState: player.playState,
         title: player.title,
+        thumbnailUrl: player.thumbnailUrl,
         previousId: player.previousId,
         nextId: player.nextId
     };
@@ -32,9 +35,19 @@ interface IProps extends ModelState {
     route: RouteProp<ModalStackParamList, 'Detail'>;
 }
 
+interface IState {
+    barrage: boolean
+}
+
 const IMAGE_WIDTH = 180;
 
-class Detail extends React.Component<IProps> {
+const SCALE = viewportWidth / IMAGE_WIDTH;
+
+class Detail extends React.Component<IProps, IState> {
+    state = {
+        barrage: false
+    }
+    anim = new Animated.Value(1);
     componentDidMount() {
         const { dispatch, route, navigation, title } = this.props;
         dispatch({
@@ -48,7 +61,7 @@ class Detail extends React.Component<IProps> {
         });
     }
     componentDidUpdate(prevProps: IProps) {
-        if(this.props.title !== prevProps.title) {
+        if (this.props.title !== prevProps.title) {
             this.props.navigation.setOptions({
                 headerTitle: this.props.title
             })
@@ -72,10 +85,32 @@ class Detail extends React.Component<IProps> {
             type: 'player/next'
         })
     }
+    barrage = () => {
+        this.setState({
+            barrage: !this.state.barrage
+        })
+        Animated.timing(this.anim, {
+            toValue: this.state.barrage ? 1 : SCALE,
+            useNativeDriver: true,
+            duration: 100,
+        }).start();
+    }
     render() {
-        const { playState, previousId, nextId } = this.props;
+        const { barrage } = this.state;
+        const { playState, previousId, nextId, thumbnailUrl } = this.props;
         return (
             <View style={styles.container}>
+                <View style={styles.imageView}>
+                    <Animated.Image source={{ uri: thumbnailUrl }} style={[styles.image, { transform: [{ scale: this.anim }] }]} />
+                </View>
+                {
+                    barrage && (
+                        <LinearGradient colors={['rgba(128, 104, 102, 0.5)', '#807c66']} style={styles.linear} />
+                    )
+                }
+                <Touchable style={styles.barrageBtn} onPress={this.barrage}>
+                    <Text style={styles.barrageText}>弹幕</Text>
+                </Touchable>
                 <PlayerSlider />
                 <View style={styles.control}>
                     <Touchable disabled={!previousId} onPress={this.previous} style={styles.button}>
