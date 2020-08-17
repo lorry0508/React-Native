@@ -1,7 +1,6 @@
 import React from 'react';
 import Item from './item';
-import { View, Animated } from 'react-native';
-import { Text } from 'react-native-svg';
+import { View, Animated, StyleSheet, StyleProp, ViewStyle } from 'react-native';
 
 export interface Message {
     id: number;
@@ -10,16 +9,18 @@ export interface Message {
 
 export interface IBarrage extends Message {
     trackIndex: number;
+    isFree?: boolean;
 }
 
 interface IProps {
     data: Message[];
     maxTrack: number;
+    style?: StyleProp<ViewStyle>;
 }
 
 interface IState {
     data: Message[];
-    list: Message[][];
+    list: IBarrage[][];
 }
 
 // 添加弹幕
@@ -38,6 +39,7 @@ function addBarrage(data: Message[], maxTrack: number, list: IBarrage[][]) {
         };
         list[trackIndex].push(barrage);
     }
+    return list;
 }
 
 /**
@@ -55,6 +57,10 @@ function getTrackIndex(list: IBarrage[][], maxTrack: number) {
         if (!barragesOfTrack || barragesOfTrack.length === 0) {
             return i;
         }
+        const lastBarrageOfTrack = barragesOfTrack[barragesOfTrack.length - 1];
+        if (lastBarrageOfTrack.isFree) {
+            return i;
+        }
     }
     return - 1;
 }
@@ -70,41 +76,44 @@ class Barrage extends React.Component<IProps, IState> {
         if (data !== prevState.data) {
             return {
                 data,
-                list: addBarrage(data, maxTrack, prevState.list)
+                list: addBarrage(data, maxTrack, prevState.list),
             };
         }
         return null;
     }
-    outside = (data: Message) => {
+    outside = (data: IBarrage) => {
         const { list } = this.state;
         const newList = list.slice();
         if (newList.length > 0) {
-            const deleteIndex = newList.indexOf(data);
-            if (deleteIndex > -1) {
-                newList.splice(deleteIndex, 1);
-                this.setState({
-                    list: newList,
-                })
-            }
+            const { trackIndex } = data;
+            newList[trackIndex] = newList[trackIndex].filter(
+                item => item.id !== data.id,
+            );
+            this.setState({
+                list: newList,
+            });
         }
     }
     renderItem = (item: IBarrage[], index: number) => {
-        return (
-            item.map((barrage, index) => {
-                return <Item key={barrage.id} data={barrage} outside={this.outside} />
-            })
-        );
+        return item.map((barrage, index) => {
+            return <Item key={barrage.id} data={barrage} outside={this.outside} />;
+        });
     }
     render() {
         const { list } = this.state;
+        const { style } = this.props;
         return (
-            <View>
+            <View style={[styles.container, style]}>
                 {list.map(this.renderItem)}
             </View>
         );
     }
-
-
 }
+
+const styles = StyleSheet.create({
+    container: {
+        position: 'absolute'
+    }
+});
 
 export default Barrage;
