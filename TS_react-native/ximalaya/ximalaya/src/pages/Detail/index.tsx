@@ -14,6 +14,31 @@ import Icon from '@/assets/iconfont';
 import PlayerSlider from './PlayerSlider';
 import { viewportWidth } from '@/utils/index';
 import LinearGradient from 'react-native-linear-gradient';
+import Barrage from '@/components/Barrage';
+import { random } from 'lodash';
+
+const data: string[] = [
+    '最灵繁的人也看不见自己的背脊',
+    '朝闻道，夕死可矣',
+    '阅读是人类进步的阶梯',
+    '内外相应，言行相称',
+    '人的一生是短的',
+    '抛弃时间的人，时间也抛弃他',
+    '自信在于沉稳',
+    '过犹不及',
+    '开卷有益',
+    '有志者事竟成',
+    '合理安排时间，就等于节约时间',
+    '成功源于不懈的努力',
+];
+
+function randomIndex(length: number) {
+    return Math.floor(Math.random() * length);
+}
+
+function getText() {
+    return data[randomIndex(data.length)];
+}
 
 const mapStateToProps = ({ player }: RootState) => {
     return {
@@ -35,8 +60,14 @@ interface IProps extends ModelState {
     route: RouteProp<ModalStackParamList, 'Detail'>;
 }
 
+interface Message {
+    id: number;
+    title: string;
+}
+
 interface IState {
-    barrage: boolean
+    barrage: boolean;
+    barrageData: Message[]
 }
 
 const IMAGE_WIDTH = 180;
@@ -45,7 +76,8 @@ const SCALE = viewportWidth / IMAGE_WIDTH;
 
 class Detail extends React.Component<IProps, IState> {
     state = {
-        barrage: false
+        barrage: false,
+        barrageData: []
     }
     anim = new Animated.Value(1);
     componentDidMount() {
@@ -59,6 +91,19 @@ class Detail extends React.Component<IProps, IState> {
         navigation.setOptions({
             headerTitle: title
         });
+        this.addBarrage();
+    }
+    addBarrage = () => {
+        setInterval(() => {
+            const { barrage } = this.state;
+            if (barrage) {
+                const id = Date.now();
+                const title = getText();
+                this.setState({
+                    barrageData: [{id, title}]
+                })
+            }
+        }, 1000)
     }
     componentDidUpdate(prevProps: IProps) {
         if (this.props.title !== prevProps.title) {
@@ -96,7 +141,7 @@ class Detail extends React.Component<IProps, IState> {
         }).start();
     }
     render() {
-        const { barrage } = this.state;
+        const { barrage, barrageData } = this.state;
         const { playState, previousId, nextId, thumbnailUrl } = this.props;
         return (
             <View style={styles.container}>
@@ -105,7 +150,10 @@ class Detail extends React.Component<IProps, IState> {
                 </View>
                 {
                     barrage && (
-                        <LinearGradient colors={['rgba(128, 104, 102, 0.5)', '#807c66']} style={styles.linear} />
+                        <>
+                            <LinearGradient colors={['rgba(128, 104, 102, 0.5)', '#807c66']} style={styles.linear} />
+                            <Barrage data={barrageData} />
+                        </>
                     )
                 }
                 <Touchable style={styles.barrageBtn} onPress={this.barrage}>
