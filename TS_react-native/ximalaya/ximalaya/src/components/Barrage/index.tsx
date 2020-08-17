@@ -8,27 +8,69 @@ export interface Message {
     title: string;
 }
 
+export interface IBarrage extends Message {
+    trackIndex: number;
+}
+
 interface IProps {
-    data: Message[]
+    data: Message[];
+    maxTrack: number;
 }
 
 interface IState {
     data: Message[];
-    list: Message[];
+    list: Message[][];
+}
+
+// 添加弹幕
+function addBarrage(data: Message[], maxTrack: number, list: IBarrage[][]) {
+    for (let i = 0; i < data.length; i++) {
+        const trackIndex = getTrackIndex(list, maxTrack);
+        if (trackIndex < 0) {
+            continue;
+        }
+        if (!list[trackIndex]) {
+            list[trackIndex] = [];
+        }
+        const barrage = {
+            ...data[i],
+            trackIndex
+        };
+        list[trackIndex].push(barrage);
+    }
+}
+
+/**
+ * [
+ *  [{id: '', title: ''}],
+ *  [{id: '', title: ''}]
+ * ]
+ * 获取弹幕轨道的下标
+ * @param list 
+ * @param maxTrack 
+ */
+function getTrackIndex(list: IBarrage[][], maxTrack: number) {
+    for (let i = 0; i < maxTrack; i++) {
+        const barragesOfTrack = list[i];
+        if (!barragesOfTrack || barragesOfTrack.length === 0) {
+            return i;
+        }
+    }
+    return - 1;
 }
 
 class Barrage extends React.Component<IProps, IState> {
     state = {
         data: this.props.data,
-        list: this.props.data,
+        list: [this.props.data.map(item => ({ ...item, trackIndex: 0 }))],
     }
     translateX = new Animated.Value(0);
     static getDerivedStateFromProps(nextProps: IProps, prevState: IState) {
-        const { data } = nextProps;
+        const { data, maxTrack } = nextProps;
         if (data !== prevState.data) {
             return {
                 data,
-                list: prevState.list.concat(data)
+                list: addBarrage(data, maxTrack, prevState.list)
             };
         }
         return null;
@@ -36,9 +78,9 @@ class Barrage extends React.Component<IProps, IState> {
     outside = (data: Message) => {
         const { list } = this.state;
         const newList = list.slice();
-        if(newList.length > 0) {
+        if (newList.length > 0) {
             const deleteIndex = newList.indexOf(data);
-            if(deleteIndex > -1) {
+            if (deleteIndex > -1) {
                 newList.splice(deleteIndex, 1);
                 this.setState({
                     list: newList,
@@ -46,9 +88,11 @@ class Barrage extends React.Component<IProps, IState> {
             }
         }
     }
-    renderItem = (item: Message, index: number) => {
+    renderItem = (item: IBarrage[], index: number) => {
         return (
-            <Item key={item.id} data={item} outside={this.outside} />
+            item.map((barrage, index) => {
+                return <Item key={barrage.id} data={barrage} outside={this.outside} />
+            })
         );
     }
     render() {
