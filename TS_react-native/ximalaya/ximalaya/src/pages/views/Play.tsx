@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Image, Animated, Easing } from 'react-native';
+import { View, Text, StyleSheet, Image, Animated, Easing } from 'react-native';
 import Touchable from '@/components/Touchable';
 import Icon from '@/assets/iconfont';
 import { RootState } from '@/models/index';
@@ -17,7 +17,7 @@ const connector = connect(mapStateToProps);
 
 type ModelState = ConnectedProps<typeof connector>;
 
-interface IProps extends ModelState {}
+interface IProps extends ModelState { }
 
 class Play extends React.Component<IProps> {
     anim = new Animated.Value(0);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavigationContainer, RouteProp } from '@react-navigation/native';
+import { NavigationContainer, RouteProp, NavigationState } from '@react-navigation/native';
 import { createStackNavigator, StackNavigationProp, HeaderStyleInterpolators, CardStyleInterpolators, TransitionPresets } from '@react-navigation/stack';
 // import Home from '@/pages/Home';
 import BottomTabs from './BottomTabs';
@@ -8,6 +8,8 @@ import Album from '@/pages/Album';
 import Detail from '@/pages/Detail';
 import { Platform, StyleSheet, StatusBar, Animated } from 'react-native';
 import Icon from '@/assets/iconfont'
+import PlayView from '@/pages/views/PlayView';
+import { getActiveRouteName } from '../utils';
 
 export type RootStackParamList = {
     BottomTabs: {
@@ -127,14 +129,14 @@ function ModalStackScreen() {
                 headerBackTitleVisible: false
             }}
         >
-            <ModalStack.Screen 
-                name='Root' 
-                component={RootStackScreen} 
-                options={{ headerShown: false }} 
+            <ModalStack.Screen
+                name='Root'
+                component={RootStackScreen}
+                options={{ headerShown: false }}
             />
-            <ModalStack.Screen 
-                name='Detail' 
-                component={Detail} 
+            <ModalStack.Screen
+                name='Detail'
+                component={Detail}
                 options={{
                     headerTintColor: '#fff',
                     headerTitle: '',
@@ -142,7 +144,7 @@ function ModalStackScreen() {
                     cardStyle: {
                         backgroundColor: '#807c66'
                     },
-                    headerBackImage: (({tintColor}) => <Icon name='icon-down' size={30} color={tintColor} style={styles.headerBackImage} />)
+                    headerBackImage: (({ tintColor }) => <Icon name='icon-down' size={30} color={tintColor} style={styles.headerBackImage} />)
                 }}
             />
         </ModalStack.Navigator>
@@ -150,10 +152,23 @@ function ModalStackScreen() {
 }
 
 class Navigator extends React.Component {
+    state = {
+        routeName: 'Root',
+    };
+    onStateChange = (state: NavigationState | undefined) => {
+        if (typeof state !== 'undefined') {
+            const routeName = getActiveRouteName(state);
+            this.setState({
+                routeName,
+            });
+        }
+    }
     render() {
+        const { routeName } = this.state;
         return (
-            <NavigationContainer>
+            <NavigationContainer onStateChange={this.onStateChange}>
                 <ModalStackScreen />
+                <PlayView routeName={routeName} />
             </NavigationContainer>
         );
     }
