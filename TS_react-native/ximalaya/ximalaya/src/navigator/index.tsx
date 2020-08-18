@@ -9,7 +9,7 @@ import Detail from '@/pages/Detail';
 import { Platform, StyleSheet, StatusBar, Animated } from 'react-native';
 import Icon from '@/assets/iconfont'
 import PlayView from '@/pages/views/PlayView';
-import { getActiveRouteName } from '../utils';
+import { getActiveRouteName, navigationRef } from '../utils';
 
 export type RootStackParamList = {
     BottomTabs: {
@@ -166,7 +166,10 @@ class Navigator extends React.Component {
     render() {
         const { routeName } = this.state;
         return (
-            <NavigationContainer onStateChange={this.onStateChange}>
+            <NavigationContainer
+                ref={navigationRef}
+                onStateChange={this.onStateChange}
+            >
                 <ModalStackScreen />
                 <PlayView routeName={routeName} />
             </NavigationContainer>

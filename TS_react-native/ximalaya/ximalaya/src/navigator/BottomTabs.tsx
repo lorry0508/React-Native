@@ -59,7 +59,7 @@ class BottomTabs extends React.Component<IProps> {
         const routeName = route.state
             ? route.state.routes[route.state.index].name
             : route.params?.screen || 'HomeTabs';
-        if(routeName === 'HomeTabs') {
+        if (routeName === 'HomeTabs') {
             navigation.setOptions({
                 headerTransparent: true, // 控制顶部标题栏显示的效果
                 headerTitle: '',
@@ -94,14 +94,14 @@ class BottomTabs extends React.Component<IProps> {
                         tabBarIcon: ({ color, size }) => <Icon name='icon-shoucang' color={color} size={size} />
                     }}
                 />
-                <Tab.Screen 
+                <Tab.Screen
                     name='Play'
                     component={Play}
-                    options={{
+                    options={({ navigation }) => ({
                         tabBarButton: () => {
-                            return <Play />
+                            return <Play onPress={() => navigation.navigate('Detail')} />
                         }
-                    }}
+                    })}
                 />
                 <Tab.Screen
                     name="Found"

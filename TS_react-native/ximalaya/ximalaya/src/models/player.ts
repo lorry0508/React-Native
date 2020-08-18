@@ -77,6 +77,7 @@ const playerModel: PlayerModel = {
     },
     effects: {
         *fetchShow({ payload }, { call, put }) {
+            yield call(stop);
             const { data } = yield call(axios.get, SHOW_URL, { params: { id: payload.id } });
             yield call(init, data.soundUrl);
             yield put({
@@ -127,7 +128,6 @@ const playerModel: PlayerModel = {
             }
         }, { type: 'watcher' }],
         *previous({ payload }, { call, put, select }) {
-            yield call(stop);
             const {id, sounds}: PlayerModelState = yield select(({player}: RootState) => player);
             const index = sounds.findIndex(item => item.id === id);
             const currentIndex = index - 1;
@@ -150,8 +150,7 @@ const playerModel: PlayerModel = {
                 }
             })
         },
-        *next({ payload }, { call, put, select }) {
-            yield call(stop);
+        *next({ payload }, { call, put, select }) { 
             const {id, sounds}: PlayerModelState = yield select(({player}: RootState) => player);
             const index = sounds.findIndex(item => item.id === id);
             const currentIndex = index + 1;

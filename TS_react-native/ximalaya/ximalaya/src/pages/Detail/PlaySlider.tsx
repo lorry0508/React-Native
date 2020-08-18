@@ -2,13 +2,13 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Slider from 'react-native-slider-x';
 import { RootState } from '@/models/index';
-import { ConnectedProps, connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { formatTime } from '@/utils/index';
 
 const mapStateToProps = ({ player }: RootState) => {
     return {
         currentTime: player.currentTime,
-        duration: player.duration
+        duration: player.duration,
     };
 };
 
@@ -18,7 +18,7 @@ type ModelState = ConnectedProps<typeof connector>;
 
 interface IProps extends ModelState { }
 
-class PlayerSlider extends React.Component<IProps> {
+class PlaySlider extends React.Component<IProps> {
     renderThumb = () => {
         const { currentTime, duration } = this.props;
         return (
@@ -28,7 +28,7 @@ class PlayerSlider extends React.Component<IProps> {
                 </Text>
             </View>
         );
-    }
+    };
     render() {
         const { currentTime, duration } = this.props;
         return (
@@ -36,8 +36,8 @@ class PlayerSlider extends React.Component<IProps> {
                 <Slider
                     value={currentTime}
                     maximumValue={duration}
-                    maximumTrackTintColor='rgba(255, 255, 255, 0.3)'
-                    minimumTrackTintColor='#fff'
+                    maximumTrackTintColor="rgba(255, 255, 255, 0.3)"
+                    minimumTrackTintColor="white"
                     renderThumb={this.renderThumb}
                     thumbStyle={styles.thumb}
                 />
@@ -55,11 +55,11 @@ const styles = StyleSheet.create({
         width: 76,
         height: 20,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     text: {
-        fontSize: 10
-    }
+        fontSize: 10,
+    },
 });
 
-export default connector(PlayerSlider);
+export default connector(PlaySlider);

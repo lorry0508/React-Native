@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Platform } from 'react-native';
 import Play from './Play';
-import { viewportWidth } from '@/utils/index';
+import { viewportWidth, navigate } from '@/utils/index';
 import { RootState } from '@/models/index';
 import { connect, ConnectedProps } from 'react-redux';
 
@@ -20,6 +20,9 @@ interface IProps extends ModalState {
 }
 
 class PlayView extends React.Component<IProps> {
+    onPress = () => {
+        navigate('Detail')
+    }
     render() {
         const { routeName, playState } = this.props;
         if(routeName === 'Root' || routeName === 'Detail' || playState === 'paused') {
@@ -27,7 +30,7 @@ class PlayView extends React.Component<IProps> {
         } 
         return (
             <View style={styles.container}>
-                <Play />
+                <Play onPress={this.onPress} />
             </View>
         );
     }
