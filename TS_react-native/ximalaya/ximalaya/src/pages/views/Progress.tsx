@@ -16,7 +16,6 @@ type ModelState = ConnectedProps<typeof connector>;
 
 interface IProps extends ModelState { }
 
-
 class Progress extends React.Component<IProps> {
     render() {
         const { children, currentTime, duration } = this.props;

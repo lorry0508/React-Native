@@ -46,6 +46,7 @@
         "react-native-tab-view-viewpager-adapter": "^1.1.0",
         "react-navigation-header-buttons": "^5.0.0",
         "react-redux": "^7.2.0",
+        "realm": "^6.0.4",
         "yapi-cli": "^1.5.0"
     },
     "devDependencies": {
