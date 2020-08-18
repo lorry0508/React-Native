@@ -8,10 +8,12 @@ import Listen from '@/pages/Listen';
 import Found from '@/pages/Found';
 import Account from '@/pages/Account';
 import { RootStackNavigation, RootStackParamList } from '.';
+import Play from '@/pages/views/Play';
 
 export type BottomTabParamList = {
     HomeTabs: undefined;
     Listen: undefined;
+    Play: undefined;
     Found: undefined;
     Account: undefined;
 };
@@ -90,6 +92,15 @@ class BottomTabs extends React.Component<IProps> {
                     options={{
                         tabBarLabel: '我听',
                         tabBarIcon: ({ color, size }) => <Icon name='icon-shoucang' color={color} size={size} />
+                    }}
+                />
+                <Tab.Screen 
+                    name='Play'
+                    component={Play}
+                    options={{
+                        tabBarButton: () => {
+                            return <Play />
+                        }
                     }}
                 />
                 <Tab.Screen
