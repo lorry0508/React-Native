@@ -24,7 +24,7 @@ class Program {
 
 const realm = new Realm({schema: [Program]});
 
-export function saveProgram(data: any) {
+export function saveProgram(data: Partial<IProgram>) {
     try {
         realm.write(() => {
             realm.create('Program', data, true);

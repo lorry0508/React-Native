@@ -4,6 +4,7 @@ import axios from 'axios';
 import { play, init, pause, getCurrentTime, getDuration, stop } from '@/config/sound';
 import { call } from 'react-native-reanimated';
 import { RootState } from '.';
+import { saveProgram } from './realm';
 
 const SHOW_URL = '/show';
 
@@ -17,7 +18,7 @@ export interface PlayerModelState {
     duration: number;
     previousId: string;
     nextId: string;
-    sounds: {id: string; title: string}[]
+    sounds: { id: string; title: string }[]
 }
 
 export interface PlayerModel extends Model {
@@ -76,7 +77,7 @@ const playerModel: PlayerModel = {
         },
     },
     effects: {
-        *fetchShow({ payload }, { call, put }) {
+        *fetchShow({ payload }, { call, put, select }) {
             yield call(stop);
             const { data } = yield call(axios.get, SHOW_URL, { params: { id: payload.id } });
             yield call(init, data.soundUrl);
@@ -91,6 +92,8 @@ const playerModel: PlayerModel = {
             yield put({
                 type: 'play'
             });
+            const { id, title, thumbnailUrl, currentTime }: PlayerModelState = yield select(({ player }: RootState) => player);
+            saveProgram({ id, title, thumbnailUrl, currentTime, duration: getDuration() })
         },
         *play({ payload }, { call, put }) {
             yield put({
@@ -101,9 +104,9 @@ const playerModel: PlayerModel = {
             });
             try {
                 yield call(play);
-            } catch(e) {
+            } catch (e) {
                 console.log('播放音频失败', e)
-            }  
+            }
             yield put({
                 type: 'setState',
                 payload: {
@@ -111,14 +114,16 @@ const playerModel: PlayerModel = {
                 }
             })
         },
-        *pause({ payload }, { call, put }) {
+        *pause({ payload }, { call, put, select }) {
             yield call(pause);
             yield put({
                 type: 'setState',
                 payload: {
                     playState: 'paused'
                 }
-            })
+            });
+            const { id, currentTime }: PlayerModelState = yield select(({ player }: RootState) => player);
+            saveProgram({id, currentTime});
         },
         watchCurrentTime: [function* (sagaEffects) {
             const { call, take, race } = sagaEffects;
@@ -128,7 +133,7 @@ const playerModel: PlayerModel = {
             }
         }, { type: 'watcher' }],
         *previous({ payload }, { call, put, select }) {
-            const {id, sounds}: PlayerModelState = yield select(({player}: RootState) => player);
+            const { id, sounds }: PlayerModelState = yield select(({ player }: RootState) => player);
             const index = sounds.findIndex(item => item.id === id);
             const currentIndex = index - 1;
             const currentItem = sounds[currentIndex];
@@ -150,8 +155,8 @@ const playerModel: PlayerModel = {
                 }
             })
         },
-        *next({ payload }, { call, put, select }) { 
-            const {id, sounds}: PlayerModelState = yield select(({player}: RootState) => player);
+        *next({ payload }, { call, put, select }) {
+            const { id, sounds }: PlayerModelState = yield select(({ player }: RootState) => player);
             const index = sounds.findIndex(item => item.id === id);
             const currentIndex = index + 1;
             const currentItem = sounds[currentIndex];
