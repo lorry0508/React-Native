@@ -4,11 +4,12 @@ import Touchable from '@/components/Touchable';
 import Icon from '@/assets/iconfont';
 import { RootState } from '@/models/index';
 import { connect, ConnectedProps } from 'react-redux';
+import Progress from './Progress';
 
 const mapStateToProps = ({ player }: RootState) => {
     return {
         thumbnailUrl: player.thumbnailUrl,
-        playState: player.playState
+        playState: player.playState,
     };
 };
 
@@ -16,33 +17,55 @@ const connector = connect(mapStateToProps);
 
 type ModelState = ConnectedProps<typeof connector>;
 
-interface IProps extends ModelState {
-
-}
+interface IProps extends ModelState {}
 
 class Play extends React.Component<IProps> {
     anim = new Animated.Value(0);
     rotate: Animated.AnimatedInterpolation;
+    timing: Animated.CompositeAnimation;
     constructor(props: IProps) {
         super(props);
-        Animated.timing(this.anim, {
-            toValue: 1,
-            duration: 10000,
-            easing: Easing.linear,
-            useNativeDriver: true
-        });
+        this.timing = Animated.loop(
+            Animated.timing(this.anim, {
+                toValue: 1,
+                duration: 10000,
+                easing: Easing.linear,
+                useNativeDriver: true,
+            }),
+            { iterations: -1 },
+        );
         this.rotate = this.anim.interpolate({
             inputRange: [0, 1],
-            outputRange: ['0deg', '360deg']
-        })
+            outputRange: ['0deg', '360deg'],
+        });
+    }
+    componentDidMount() {
+        const { playState } = this.props;
+        if (playState === 'playing') {
+            this.timing.start();
+        }
+    }
+    componentDidUpdate() {
+        const { playState } = this.props;
+        if (playState === 'playing') {
+            this.timing.start();
+        } else if (playState === 'paused') {
+            this.timing.stop();
+        }
     }
     render() {
         const { thumbnailUrl } = this.props;
         return (
             <Touchable style={styles.play}>
-                {
-                    thumbnailUrl ? <Animated.Image source={{ uri: thumbnailUrl }} style={[styles.image, { transform: [{ rotate: this.rotate }] }]} /> : <Icon name='icon-bofang3' color='#ededed' size={40} />
-                }
+                <Progress>
+                    <Animated.View style={{ transform: [{ rotate: this.rotate }] }}>
+                        {thumbnailUrl ? (
+                            <Image source={{ uri: thumbnailUrl }} style={styles.image} />
+                        ) : (
+                                <Icon name="icon-bofang3" color="#ededed" size={40} />
+                            )}
+                    </Animated.View>
+                </Progress>
             </Touchable>
         );
     }
@@ -52,13 +75,12 @@ const styles = StyleSheet.create({
     play: {
         justifyContent: 'center',
         alignItems: 'center',
-        overflow: 'hidden'
     },
     image: {
         width: 42,
         height: 42,
         borderRadius: 21,
-    }
+    },
 });
 
 export default connector(Play);
