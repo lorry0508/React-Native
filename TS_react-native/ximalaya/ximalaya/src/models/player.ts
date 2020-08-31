@@ -2,9 +2,8 @@ import { Effect, Model, EffectWithType, EffectsCommandMap } from 'dva-core-ts';
 import { Reducer } from 'redux';
 import axios from 'axios';
 import { play, init, pause, getCurrentTime, getDuration, stop } from '@/config/sound';
-import { call } from 'react-native-reanimated';
 import { RootState } from '.';
-import { saveProgram } from './realm';
+import { saveProgram } from '../config/realm';
 
 const SHOW_URL = '/show';
 

@@ -2,29 +2,79 @@ import React from 'react';
 import {
     View,
     Text,
-    Button
+    ListRenderItemInfo,
+    StyleSheet,
+    Image
 } from 'react-native';
 import { RootStackNavigation } from '@/navigator/index';
+import realm, { IProgram } from '@/config/realm';
+import { FlatList } from 'react-native-gesture-handler';
+import Icon from '@/assets/iconfont';
+import { formatTime } from '../utils';
 
 interface IProps {
     navigation: RootStackNavigation;
 }
 
 class Listen extends React.Component<IProps> {
-    onPress = () => {
-        const { navigation } = this.props;
-        navigation.navigate('Detail', {
-            id: 100
-        });
-    }
-    render() {
+    renderItem = ({item}: ListRenderItemInfo<IProgram>) => {
         return (
-            <View>
-                <Text>Listen</Text>
-                <Button title="跳转到详情页" onPress={this.onPress} />
+            <View style={styles.item}>
+                <Image source={{uri: item.thumbnailUrl}} style={styles.image} />
+                <View style={styles.content}>
+                    <Text style={styles.title}>{item.title}</Text>
+                    <View style={styles.bottom}>
+                        <Icon name='icon-time' color='#999' size={14} />
+                        <Text style={styles.text}>{formatTime(item.duration)}</Text>
+                        <Text style={styles.rate}>已播放：{item.rate}%</Text>
+                    </View>
+                </View> 
             </View>
         );
     }
+    render() {
+        const programs = realm.objects<IProgram>('Program');
+        return (
+            <FlatList 
+                data={programs}
+                renderItem={this.renderItem}
+            />
+        );
+    }
 }
+
+const styles = StyleSheet.create({
+    item: {
+        flexDirection: 'row',
+        marginHorizontal: 10,
+        borderBottomColor: '#ccc',
+        borderBottomWidth: StyleSheet.hairlineWidth
+    },
+    image: {
+        width: 65,
+        height: 65,
+        borderRadius: 3,
+        margin: 5
+    },
+    title: {
+        color: '#999'
+    },
+    content: {
+        flex: 1,
+        justifyContent: 'space-around'
+    },
+    bottom: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    text: {
+        color: '#999',
+        marginLeft: 5
+    },
+    rate: {
+        marginLeft: 20,
+        color: '#f6a624'
+    }
+});
 
 export default Listen;
