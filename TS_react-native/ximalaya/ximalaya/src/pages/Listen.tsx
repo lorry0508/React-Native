@@ -11,16 +11,25 @@ import realm, { IProgram } from '@/config/realm';
 import { FlatList } from 'react-native-gesture-handler';
 import Icon from '@/assets/iconfont';
 import { formatTime } from '../utils';
+import Touchable from '@/components/Touchable';
+import IconDeleteItemCcAndM from '@/assets/iconfont/IconDeleteItemCcAndM';
 
 interface IProps {
     navigation: RootStackNavigation;
 }
 
 class Listen extends React.Component<IProps> {
-    renderItem = ({item}: ListRenderItemInfo<IProgram>) => {
+    delete = (item: IProgram) => {
+        realm.write(() => {
+            const program = realm.objects('Program').filtered(`id='${item.id}'`);
+            realm.delete(program);
+            this.setState({});
+        })
+    }
+    renderItem = ({ item }: ListRenderItemInfo<IProgram>) => {
         return (
             <View style={styles.item}>
-                <Image source={{uri: item.thumbnailUrl}} style={styles.image} />
+                <Image source={{ uri: item.thumbnailUrl }} style={styles.image} />
                 <View style={styles.content}>
                     <Text style={styles.title}>{item.title}</Text>
                     <View style={styles.bottom}>
@@ -28,14 +37,17 @@ class Listen extends React.Component<IProps> {
                         <Text style={styles.text}>{formatTime(item.duration)}</Text>
                         <Text style={styles.rate}>已播放：{item.rate}%</Text>
                     </View>
-                </View> 
+                </View>
+                <Touchable style={styles.deleteBtn} onPress={() => { this.delete(item) }}>
+                    <IconDeleteItemCcAndM />
+                </Touchable>
             </View>
         );
     }
     render() {
         const programs = realm.objects<IProgram>('Program');
         return (
-            <FlatList 
+            <FlatList
                 data={programs}
                 renderItem={this.renderItem}
             />
@@ -74,6 +86,10 @@ const styles = StyleSheet.create({
     rate: {
         marginLeft: 20,
         color: '#f6a624'
+    },
+    deleteBtn: {
+        padding: 10,
+        justifyContent: 'center'
     }
 });
 
