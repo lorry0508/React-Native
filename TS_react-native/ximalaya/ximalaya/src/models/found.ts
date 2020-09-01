@@ -3,6 +3,12 @@ import axios from 'axios';
 
 const FOUND_URL = '/found/list';
 
+export interface IFound {
+    id: string;
+    title: string;
+    videoUrl: string;
+}
+
 interface FoundModel extends Model {
     namespace: 'found';
     effects: {
