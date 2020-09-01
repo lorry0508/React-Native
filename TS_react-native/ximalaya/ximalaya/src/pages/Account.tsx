@@ -15,7 +15,7 @@ interface IProps {
 
 class Account extends React.Component<IProps> {
     onPress = () => {
-        const {navigation} = this.props;
+        const { navigation } = this.props;
         navigation.navigate('Login')
     }
     render() {
