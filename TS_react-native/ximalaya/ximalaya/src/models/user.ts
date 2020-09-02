@@ -1,6 +1,7 @@
 import { Model, Effect } from "dva-core-ts";
 import { Reducer } from "redux";
 import axios from "axios";
+import { goBack } from "@/utils/index";
 
 const USER_URL = '/login';
 
@@ -43,13 +44,14 @@ const userModel: UserModel = {
     effects: {
         *login({ payload }, { call, put }) {
             const { data, status, msg } = yield call(axios.post, USER_URL, payload);
-            if (status) {
+            if (status === 100) {
                 yield put({
                     type: 'setState',
                     payload: {
                         user: data,
                     }
                 })
+                goBack();
             } else {
                 console.error(msg);
             }
