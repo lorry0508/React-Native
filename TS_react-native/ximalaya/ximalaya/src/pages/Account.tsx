@@ -8,8 +8,20 @@ import {
 import { ModalStackNavigation } from '@/navigator/index';
 import defaultAvatarImg from '@/assets/default_avatar.png';
 import Touchable from '@/components/Touchable';
+import { RootState } from '@/models/index';
+import { connect, ConnectedProps } from 'react-redux';
 
-interface IProps {
+const mapStateToProps = ({ user }: RootState) => {
+    return {
+        user: user.user
+    }
+};
+
+const connector = connect(mapStateToProps);
+
+type ModelState = ConnectedProps<typeof connector>;
+
+interface IProps extends ModelState {
     navigation: ModalStackNavigation;
 }
 
@@ -18,7 +30,29 @@ class Account extends React.Component<IProps> {
         const { navigation } = this.props;
         navigation.navigate('Login')
     }
+    logout = () => {
+        const { dispatch } = this.props;
+        dispatch({
+            type: 'user/logout'
+        })
+    }
     render() {
+        const { user } = this.props;
+        if (user) {
+            return (
+                <View>
+                    <View style={styles.loginView}>
+                        <Image source={{ uri: user.avatar }} style={styles.avatar} />
+                        <Text>{user.name}</Text>
+                    </View>
+                    <View style={styles.right}>
+                        <Touchable style={[styles.loginBtn, { marginLeft: 15 }]} onPress={this.logout}>
+                            <Text style={styles.loginBtnText}>退出登录</Text>
+                        </Touchable>
+                    </View>
+                </View>
+            );
+        }
         return (
             <View style={styles.loginView}>
                 <Image source={defaultAvatarImg} style={styles.avatar} />
@@ -66,4 +100,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Account;
+export default connector(Account);

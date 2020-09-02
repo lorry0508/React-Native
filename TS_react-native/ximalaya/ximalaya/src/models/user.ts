@@ -1,13 +1,15 @@
-import { Model, Effect } from "dva-core-ts";
+import { Model, Effect, SubscriptionsMapObject } from "dva-core-ts";
 import { Reducer } from "redux";
 import axios from "axios";
 import { goBack } from "@/utils/index";
+import storage, { load } from "@/config/storage";
+import { call } from "react-native-reanimated";
 
 const USER_URL = '/login';
 
 export interface IUser {
     name: string;
-    avator: string;
+    avatar: string;
 }
 
 export interface UserModelState {
@@ -20,10 +22,12 @@ export interface UserModel extends Model {
     effects: {
         login: Effect;
         logout: Effect;
+        loadStorage: Effect;
     };
     reducers: {
         setState: Reducer<UserModelState>
-    }
+    };
+    subscriptions: SubscriptionsMapObject;
 }
 
 const initalState = {
@@ -44,12 +48,16 @@ const userModel: UserModel = {
     effects: {
         *login({ payload }, { call, put }) {
             const { data, status, msg } = yield call(axios.post, USER_URL, payload);
-            if (status === 100) {
+            if (status === 300) {
                 yield put({
                     type: 'setState',
                     payload: {
                         user: data,
                     }
+                })
+                storage.save({
+                    key: 'user',
+                    data
                 })
                 goBack();
             } else {
@@ -62,6 +70,30 @@ const userModel: UserModel = {
                 payload: {
                     user: undefined
                 }
+            });
+            storage.save({
+                key: 'user',
+                data: null
+            })
+        },
+        *loadStorage(_, { put, call }) {
+            try {
+                const user = yield call(load, {key: 'user'});
+                yield put({
+                    type: 'setState',
+                    payload: {
+                        user
+                    }
+                })
+            } catch (error) {
+                console.log("保存用户信息错误", error)
+            }
+        }
+    },
+    subscriptions: {
+        setup({ dispatch }) {
+            dispatch({
+                type: 'loadStorage',
             })
         }
     }
