@@ -4,22 +4,27 @@ import { connect, ConnectedProps } from 'react-redux';
 import { View, Image, Text, StyleSheet } from 'react-native';
 import Touchable from '@/components/Touchable';
 import defaultAvatarImg from '@/assets/default_avatar.png';
+import { navigate } from '@/utils/index';
 
-const mapStateToProps = ({ user }: RootState) => {
-    return {
-        user: user.user
-    };
-};
+interface IProps {
+    authority?: boolean;
+    noMatch?: () => JSX.Element
+}
 
-const connector = connect(mapStateToProps);
-
-type ModelState = ConnectedProps<typeof connector>;
-
-class Authorized extends React.Component<ModelState> {
+class Authorized extends React.Component<IProps> {
+    onPress = () => {
+        navigate('Login')
+    }
     render() {
-        const { user, children } = this.props;
-        if(user) {
+        const { children, authority, noMatch } = this.props;
+        if(authority) {
             return children;
+        }
+        return this.renderNoMatch();
+    }
+    renderNoMatch = () => {
+        if(this.props.noMatch) {
+            return <View>{this.props.noMatch()}</View>
         }
         return (
             <View style={styles.loginView}>
@@ -68,4 +73,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default connector(Authorized);
+export default Authorized;
