@@ -3,7 +3,7 @@ import { Reducer } from "redux";
 import axios from "axios";
 import { goBack } from "@/utils/index";
 import storage, { load } from "@/config/storage";
-import { call } from "react-native-reanimated";
+import Toast from 'react-native-root-toast';
 
 const USER_URL = '/login';
 
@@ -61,6 +61,12 @@ const userModel: UserModel = {
                 })
                 goBack();
             } else {
+                Toast.show(msg, {
+                    duration: Toast.durations.LONG,
+                    position: Toast.positions.CENTER,
+                    shadow: true,
+                    animation: true
+                })
                 console.error(msg);
             }
         },
