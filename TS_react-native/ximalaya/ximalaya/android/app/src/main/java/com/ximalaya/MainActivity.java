@@ -4,6 +4,8 @@ import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
 import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
+import android.os.Bundle;
+import org.devio.rn.splashscreen.SplashScreen;
 
 public class MainActivity extends ReactActivity {
 
@@ -23,5 +25,13 @@ public class MainActivity extends ReactActivity {
         return new RNGestureHandlerEnabledRootView(MainActivity.this);
       }
     };
+  }
+
+  // 重写onCreate方法，整个RN项目的加载的入口
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    // 显示启动屏，第二个参数是我们自定义主题的引用
+    SplashScreen.show(this, R.style.SplashScreenTheme);
+    super.onCreate(savedInstanceState);
   }
 }

@@ -11,6 +11,7 @@ import Icon from '@/assets/iconfont'
 import PlayView from '@/pages/views/PlayView';
 import { getActiveRouteName, navigationRef } from '../utils';
 import Login from '@/pages/Login';
+import SplashScreen from 'react-native-splash-screen';
 
 export type RootStackParamList = {
     BottomTabs: {
@@ -165,6 +166,9 @@ class Navigator extends React.Component {
     state = {
         routeName: 'Root',
     };
+    componentDidMount() {
+        SplashScreen.hide();
+    }
     onStateChange = (state: NavigationState | undefined) => {
         if (typeof state !== 'undefined') {
             const routeName = getActiveRouteName(state);
