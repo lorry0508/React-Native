@@ -1,5 +1,7 @@
 apply plugin: "com.android.application"
 
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+
 import com.android.build.OutputFile
 
 /**
@@ -132,8 +134,8 @@ android {
         applicationId "com.ximalaya"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode project.env.get("VERSIONCODE").toInteger()
+        versionName project.env.get("VERSIONNAME")
         multiDexEnabled true
     }
     splits {
@@ -219,4 +221,3 @@ task copyDownloadableDepsToLibs(type: Copy) {
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
 
-apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
