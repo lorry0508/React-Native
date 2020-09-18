@@ -5523,6 +5523,11 @@ react-is@^16.12.0, react-is@^16.8.1, react-is@^16.8.4, react-is@^16.8.6:
   resolved "https://registry.npm.taobao.org/react-is/download/react-is-16.13.1.tgz?cache=0&sync_timestamp=1598612918330&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact-is%2Fdownload%2Freact-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha1-eJcppNw23imZ3BVt1sHZwYzqVqQ=
 
+react-native-config@^1.3.3:
+  version "1.3.3"
+  resolved "https://registry.npm.taobao.org/react-native-config/download/react-native-config-1.3.3.tgz#307ba512f92e4ecdc9ced06288610c0608da3ae7"
+  integrity sha1-MHulEvkuTs3JztBiiGEMBgjaOuc=
+
 react-native@0.63.2:
   version "0.63.2"
   resolved "https://registry.npm.taobao.org/react-native/download/react-native-0.63.2.tgz#eaebf3430577b37fbd66ef228a86b3408259ef8e"
