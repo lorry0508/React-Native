@@ -1,5 +1,5 @@
 import React from 'react';
-import Navigator from '@/navigator/index';
+import Navigator from '@/navigator';
 
 export default class extends React.Component {
     render() {

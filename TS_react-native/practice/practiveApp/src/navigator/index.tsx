@@ -1,12 +1,14 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { CardStyleInterpolators, createStackNavigator, HeaderStyleInterpolators, StackNavigationProp } from '@react-navigation/stack';
-import Home from '@/pages/Home'
-import Detail from '@/pages/Detail'
-import { Platform } from 'react-native';
-import { StyleSheet } from 'react-native';
+import BottomTabs from './BottomTabs';
+import Detail from '@/pages/Detail';
+import { Platform, StyleSheet } from 'react-native';
 
 export type RootStackParamList = {
+    BottomTabs: {
+        screen?: string
+    };
     Home: undefined;
     Detail: {
         id: number
@@ -44,11 +46,8 @@ class Navigator extends React.Component {
                 >
                     {/* options的优先级高于screenOptions */}
                     <Stack.Screen
-                        name="Home" 
-                        component={Home}
-                        options={{
-                            headerTitle: '首页'
-                        }}
+                        name="BottomTabs" 
+                        component={BottomTabs}
                     />
                     <Stack.Screen
                         name="Detail" 
