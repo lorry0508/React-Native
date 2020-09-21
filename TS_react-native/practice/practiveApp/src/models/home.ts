@@ -6,6 +6,7 @@ interface HomeState {
 }
 
 interface HomeModel extends Model {
+    [x: string]: any;
     namespace: 'home';
     state: {
         num: number
@@ -19,14 +20,14 @@ interface HomeModel extends Model {
 }
 
 const initialState = {
-    num: 0
+    num: 1
 };
 
 const homeModel: HomeModel = {
     namespace: 'home',
     state: initialState,
     reducers: {
-        add(state = initialState, { payload }) {
+        add(state = initialState, { type, payload }) {
             return {
                 ...state,
                 num: state.num + payload.num
