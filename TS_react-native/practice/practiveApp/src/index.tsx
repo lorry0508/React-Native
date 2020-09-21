@@ -1,6 +1,5 @@
 import React from 'react';
-import { StatusBar, View } from 'react-native';
-import Test from '@/pages/test';
+import { StatusBar, View, Text } from 'react-native';
 
 export default class extends React.Component {
     render() {
@@ -11,7 +10,7 @@ export default class extends React.Component {
             //     translucent
             // />
             <View>
-                <Test />
+                <Text>123</Text>
             </View>
         );
     }
