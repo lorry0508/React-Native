@@ -3,7 +3,7 @@ import { Reducer } from "redux";
 
 interface HomeState {
     num: number;
-    loading: boolean;
+    // loading: boolean;
 }
 
 interface HomeModel extends Model {
@@ -11,11 +11,11 @@ interface HomeModel extends Model {
     namespace: 'home';
     state: {
         num: number,
-        loading: boolean
+        // loading: boolean
     };
     reducers: {
         add: Reducer<HomeState>,
-        setStatus: Reducer<HomeState>
+        // setStatus: Reducer<HomeState>
     };
     effects: {
         asyncAdd: Effect
@@ -43,32 +43,32 @@ const homeModel: HomeModel = {
                 num: state.num + payload.num
             };
         },
-        setStatus(state = initialState, { payload }) {
-            return {
-                ...state,
-                loading: payload.loading
-            };
-        }
+        // setStatus(state = initialState, { payload }) {
+        //     return {
+        //         ...state,
+        //         loading: payload.loading
+        //     };
+        // }
     },
     effects: {
         *asyncAdd({ payload }, { call, put }) {
-            yield put({
-                type: 'setStatus',
-                payload: {
-                    loading: true
-                }
-            });
+            // yield put({
+            //     type: 'setStatus',
+            //     payload: {
+            //         loading: true
+            //     }
+            // });
             yield call(delay, 3000);
             yield put({
                 type: 'add',
                 payload
             });
-            yield put({
-                type: 'setStatus',
-                payload: {
-                    loading: false
-                }
-            });
+            // yield put({
+            //     type: 'setStatus',
+            //     payload: {
+            //         loading: false
+            //     }
+            // });
         }
     }
 };

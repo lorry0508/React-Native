@@ -4,9 +4,9 @@ import { RootStackNavigation } from '@/navigator';
 import { RootState } from '@/models';
 import { connect, ConnectedProps } from 'react-redux';
 
-const mapStateToProps = ({ home }: RootState) => ({
+const mapStateToProps = ({ home, loading }: RootState) => ({
     num: home.num,
-    loading: home.loading
+    loading: loading.effects['home/asyncAdd']
 });
 
 const connector = connect(mapStateToProps);
