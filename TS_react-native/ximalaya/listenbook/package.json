@@ -23,7 +23,7 @@
         "@react-navigation/stack": "^5.1.0",
         "@types/lodash": "^4.14.150",
         "@types/react-redux": "^7.1.7",
-        "axios": "^0.19.2",
+        "axios": "^0.21.1",
         "dva-core-ts": "^2.0.7",
         "dva-loading-ts": "^3.0.23",
         "dva-model-extend": "^0.1.2",
